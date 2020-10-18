@@ -1,10 +1,19 @@
 {
   "name": "dungeon-crawl-vue",
   "version": "0.1.0",
+  "main": "dist/dungeon-crawl.umd.js",
+  "module": "dist/dungeon-crawl.esm.js",
+  "unpkg": "dist/dungeon-crawl.min.js",
+  "browser": {
+    "./sfc": "src/dungeon-crawl.vue"
+  },
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "npm run build:umd & npm run build:es & npm run build:unpkg",
+    "build:umd": "rollup --config build/rollup.config.js --format umd --file dist/my-component.umd.js",
+    "build:es": "rollup --config build/rollup.config.js --format es --file dist/my-component.esm.js",
+    "build:unpkg": "rollup --config build/rollup.config.js --format iife --file dist/my-component.min.js",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },
@@ -31,9 +40,6 @@
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11"
-  },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
   },
   "lint-staged": {
     "*.{js,jsx,vue}": [
