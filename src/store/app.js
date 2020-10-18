@@ -31,34 +31,34 @@ const getters = {
 
 const mutations = {
   setTileSize(state, val) {
-    state.settileSize = val;
+    state.tileSize = val;
   },
   setRarityTolerance(state, val) {
-    state.setrarityTolerance = val;
+    state.rarityTolerance = val;
   },
   setPlayerBuilt(state, val) {
-    state.setplayerBuilt = val;
+    state.playerBuilt = val;
   },
   setGameOver(state, val) {
-    state.setgameOver = val;
+    state.gameOver = val;
   },
   setToolTip(state, val) {
-    state.settoolTip = val;
+    state.toolTip = val;
   },
   setMouseX(state, val) {
-    state.setmouseX = val;
+    state.mouseX = val;
   },
   setMouseY(state, val) {
-    state.setmouseY = val;
+    state.mouseY = val;
   },
   setToolTipObject(state, val) {
-    state.settoolTipObject = val;
+    state.toolTipObject = val;
   },
   setDisplayMarket(state, val) {
-    state.setdisplayMarket = val;
+    state.displayMarket = val;
   },
   setDisplayGear(state, val) {
-    state.setdisplayGear = val;
+    state.displayGear = val;
   },
   setDimensions(state, val) {
     state.dimensions = val;
@@ -69,7 +69,7 @@ const actions = {
   updateToolTip({ state, commit }, { mouseX, mouseY, toolTipObject }) {
     commit('setMouseX', mouseX);
     commit('setMouseY', mouseY);
-    commit('setTooltipObject', toolTipObject);
+    commit('setToolTipObject', toolTipObject);
     commit('setToolTip', state.toolTip + 1);
     sleep(4000).then(() => {
       commit('setToolTip', state.toolTip - 1);

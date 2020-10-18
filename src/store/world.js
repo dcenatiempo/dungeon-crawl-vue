@@ -7,6 +7,7 @@ const state = () => ({
 });
 
 const getters = {
+  world: state => state.world,
   currentWorld: state => state.world[state.playerLevel] || [],
   isTownLevel: state => state.playerLevel % TOWN_EVERY === 0,
   levels: state => state.world.length,
@@ -25,8 +26,8 @@ const mutations = {
 };
 
 const actions = {
-  addNewLevel({ state, commit, rootGetters }, toLevel) {
-    const level = rootGetters['dungeon/player/level'];
+  addNewLevel({ state, commit }, toLevel) {
+    const level = state.playerLevel;
     let newWorld = JSON.parse(JSON.stringify(state.world));
 
     if (level % TOWN_EVERY > 0) newWorld.push(createDungeonLevel(toLevel));
@@ -34,15 +35,14 @@ const actions = {
 
     commit('setWorld', newWorld);
   },
-  updateVisibility({ state, commit }, target) {
+  updateVisibility({ state }, target) {
     const level = state.playerLevel;
     if (level % TOWN_EVERY <= 0) return;
 
     let shadowSize = 5; //1-5
-    let newWorld = JSON.parse(JSON.stringify(state.world));
-    let dungeon = newWorld[level];
-    // let rows = dungeon.length;
-    // let cols = dungeon[0].length;
+
+    let dungeon = state.world[level];
+
     let coords;
 
     const shadows = SHADOW_LIST;
@@ -81,7 +81,7 @@ const actions = {
             }
             if (isInBounds([rShadAbs, cShadAbs])) {
               dungeon[rShadAbs][cShadAbs].fog += 1;
-              //console.log("full fog added")
+              // console.log('full fog added');
             }
           }
           for (let j = 0; j < shadows[i].half.length; j++) {
@@ -113,7 +113,7 @@ const actions = {
             }
             if (isInBounds([rShadAbs, cShadAbs])) {
               dungeon[rShadAbs][cShadAbs].fog += 0.5;
-              //console.log("half fog added")
+              // console.log('half fog added');
             }
           }
         }
@@ -251,8 +251,6 @@ const actions = {
     }
     dungeon[target[0]][target[1]].vis = true; // make players location (0,0) visible
     dungeon[target[0]][target[1]].fog = 0; // make players location (0,0) un-foggy
-
-    commit('setWorld', newWorld);
   },
 };
 
@@ -390,7 +388,6 @@ function createDungeonLevel(toLevel) {
 // given location target (row,col) returns true if cell is within map bounds false if not
 function isInBounds(state) {
   return target => {
-    // debugger; // eslint-disable-line
     const currentWorld = getters.currentWorld(state);
     const rows = currentWorld.length;
     const cols = currentWorld[0].length;
@@ -406,5 +403,5 @@ function isInBounds(state) {
 }
 
 function getLevel(state) {
-  level => state.world?.[level];
+  return level => state.world?.[level];
 }

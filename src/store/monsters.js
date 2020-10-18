@@ -7,24 +7,14 @@ import {
   getWeapon,
   getArmor,
 } from '../lib/utils';
-// import {
-//   getMaxMoves,
-//   getMaxHealth,
-//   getMaxAttacks,
-//   battle,
-// } from '../lib/helpers';
 
-const startingMonsters = [
-  [
-    createMonster(MONSTER_LIST[0][getRand(0, MONSTER_LIST[0].length - 1)], [
-      8,
-      8,
-    ]),
-  ],
-];
+// createMonster({
+//   monster: MONSTER_LIST[0][getRand(0, MONSTER_LIST[0].length - 1)],
+//   coords: [8, 8],
+// }),
 
 const state = () => ({
-  monsters: startingMonsters,
+  monsters: [[]],
   playerLevel: 0,
 });
 
@@ -53,6 +43,7 @@ const actions = {
   monsterTurn,
   moveMonster,
   resetMoves,
+  createMonster,
 };
 
 export default { state, getters, mutations, actions, namespaced: true };
@@ -63,7 +54,7 @@ export default { state, getters, mutations, actions, namespaced: true };
  *
  *******************************************************************************/
 
-function createMonster(monster, coords) {
+function createMonster({ rootGetters }, { monster, coords }) {
   let tempMonster = {
     ...monster,
     alert: [], //['-23 Health', 'Dodge!'],
@@ -72,11 +63,10 @@ function createMonster(monster, coords) {
     gold: randomGold(monster.gold), // Gold carrying on person
     armor: getArmor(monster.tools), // Array of armor objects on person
     weapon: getWeapon(monster.tools), // Weapon on person
-    movesRemain: 3, //getMaxMoves(monster), // MaxMoves minus moves already taken
-    health: 30, //getMaxHealth(monster), // MaxHealth minus damage taken
+    movesRemain: rootGetters.getMaxMoves(monster), // MaxMoves minus moves already taken
+    health: rootGetters.getMaxHealth(monster), // MaxHealth minus damage taken
   };
-  tempMonster.attacksRemain = 3; //getMaxAttacks(tempMonster);
-
+  tempMonster.attacksRemain = rootGetters.getMaxAttacks(tempMonster);
   return tempMonster;
 }
 
@@ -88,10 +78,9 @@ function createMonster(monster, coords) {
 
 function isAnyMonster(state) {
   return target => {
+    let mIndex = false;
     const currentMonsters = getters.currentMonsters(state);
     if (!currentMonsters?.length) return mIndex;
-
-    let mIndex = false;
 
     currentMonsters.forEach((monster, index) => {
       if (target[0] == monster.locale[0] && target[1] == monster.locale[1]) {
@@ -104,10 +93,9 @@ function isAnyMonster(state) {
 
 function isAliveMonster(state) {
   return target => {
+    let mIndex = false;
     const currentMonsters = getters.currentMonsters(state);
     if (!currentMonsters?.length) return mIndex;
-
-    let mIndex = false;
 
     currentMonsters.forEach((monster, index) => {
       if (target[0] == monster.locale[0] && target[1] == monster.locale[1]) {
@@ -122,10 +110,9 @@ function isAliveMonster(state) {
 
 function isDeadMonster(state) {
   return target => {
+    let mIndex = false;
     const currentMonsters = getters.currentMonsters(state);
     if (!currentMonsters?.length) return mIndex;
-
-    let mIndex = false;
 
     currentMonsters.forEach((monster, index) => {
       if (target[0] == monster.locale[0] && target[1] == monster.locale[1]) {
@@ -151,10 +138,13 @@ function isDeadMonster(state) {
  *
  *******************************************************************************/
 
-function populateLevel({ state, commit, rootGetters }, toLevel) {
+async function populateLevel(
+  { state, commit, dispatch, rootGetters },
+  toLevel
+) {
   let newMonsters = JSON.parse(JSON.stringify(state.monsters));
   let monsterLevelList = [];
-  let currentWorld = rootGetters['world/currentWorld'](toLevel);
+  let currentWorld = rootGetters['world/world'][toLevel];
   let remainder = toLevel % TOWN_EVERY;
   let rarity;
   for (let r = 1; r < currentWorld.length - 2; r++) {
@@ -164,12 +154,11 @@ function populateLevel({ state, commit, rootGetters }, toLevel) {
         remainder == TOWN_EVERY - 1 &&
         currentWorld[r][c].toLevel === toLevel + 1
       ) {
-        monsterLevelList.push(
-          createMonster(
-            MONSTER_LIST[3][getRand(0, MONSTER_LIST[3].length - 1)],
-            [r, c]
-          )
-        );
+        const newMonster = await dispatch('createMonster', {
+          monster: MONSTER_LIST[3][getRand(0, MONSTER_LIST[3].length - 1)],
+          coords: [r, c],
+        });
+        monsterLevelList.push(newMonster);
       }
       if (currentWorld[r][c].type === 'floor') {
         if (getRand(0, 50) === 0) {
@@ -198,10 +187,12 @@ function populateLevel({ state, commit, rootGetters }, toLevel) {
             }
           }
 
-          const newMonster = createMonster(
-            MONSTER_LIST[rarity][getRand(0, MONSTER_LIST[rarity].length - 1)],
-            [r, c]
-          );
+          const newMonster = await dispatch('createMonster', {
+            monster:
+              MONSTER_LIST[rarity][getRand(0, MONSTER_LIST[rarity].length - 1)],
+            coords: [r, c],
+          });
+
           monsterLevelList.push(newMonster);
         }
       }
@@ -213,9 +204,9 @@ function populateLevel({ state, commit, rootGetters }, toLevel) {
   commit('setMonsters', newMonsters);
 }
 
-function monsterLoseHealth({ state, commit, rootGetters }, { id, damage }) {
+function monsterLoseHealth({ state, commit }, { id, damage }) {
   // locate monster
-  const level = rootGetters.player.level;
+  const level = state.playerLevel;
   let newMonsters = JSON.parse(JSON.stringify(state.monsters));
   let newMonster = newMonsters[level][id];
 
@@ -227,11 +218,11 @@ function monsterLoseHealth({ state, commit, rootGetters }, { id, damage }) {
   commit('setMonsters', newMonsters);
 }
 
-function takeItemFromMonster({ state, commit, rootGetters }, { item, id }) {
+function takeItemFromMonster({ state, commit }, { item, id }) {
   if (id === null) return;
 
   // locate monster
-  const level = rootGetters.player.level;
+  const level = state.playerLevel;
   let newMonsters = JSON.parse(JSON.stringify(state.monsters));
   let newMonster = newMonsters[level][id];
 
@@ -246,9 +237,9 @@ function takeItemFromMonster({ state, commit, rootGetters }, { item, id }) {
   commit('setMonsters', newMonsters);
 }
 
-function monsterFlashOver({ state, commit, rootGetters }, { id }) {
+function monsterFlashOver({ state, commit }, { id }) {
   // locate monster
-  const level = rootGetters.player.level;
+  const level = state.playerLevel;
   let newMonsters = JSON.parse(JSON.stringify(state.monsters));
   let newMonster = newMonsters[level][id];
 
@@ -267,7 +258,7 @@ function resetMoves({ state, commit, rootGetters }, id) {
 }
 
 // for monster index i, exaust moves, then attack
-function monsterTurn({ dispatch, rootGetters }, mi) {
+async function monsterTurn({ dispatch, rootGetters }, mi) {
   const currentWorld = rootGetters['world/currentWorld'];
   const m = getters.currentMonsters[mi];
   const pL = rootGetters['player/locale'];
@@ -283,6 +274,7 @@ function monsterTurn({ dispatch, rootGetters }, mi) {
   }
   // max out monster moves
   function moveRecursive() {
+    console.count('monstermove');
     if (moves <= 0) return;
     if (isByPlayer(mL, pL)) return;
     // check moves
@@ -321,7 +313,7 @@ function monsterTurn({ dispatch, rootGetters }, mi) {
 
   // max out monster attacks
   while (moves > 0 && attacks > 0 && isByPlayer(mL, pL)) {
-    const damage = dispatch('battle', { index: mi, attacker: true });
+    const damage = await dispatch('battle', { index: mi, attacker: true });
     dispatch('player/loseHealth', damage);
     // timed erase of player alerts
     dispatch('player/clearPlayerAlerts');

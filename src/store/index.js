@@ -72,7 +72,7 @@ function getExpLevel(state) {
 }
 
 // returns attack points of character
-function getAttackPoints(/* state */) {
+function getAttackPoints(state) {
   return char => {
     if (char.type === 'player') {
       return player.getters.attackPoints;
@@ -80,7 +80,7 @@ function getAttackPoints(/* state */) {
     return Math.round(
       (char.strength + char.intel) *
         ((char.weapon.attack + 10) / 10) *
-        ((getExpLevel(char) + 1) / 4)
+        ((getExpLevel(state)(char) + 1) / 4)
     );
   };
 }
@@ -182,22 +182,24 @@ function getMaxAttacks(/* state */) {
 }
 
 // given char returns max health
-function getMaxHealth(/* state */) {
+function getMaxHealth(state) {
   return char => {
     if (char.type === 'player') {
       return player.getters.maxHealth;
     }
     //TODO: strength, tenacity, level
-    return 30 + (char.strength + char.tenacity) * (getExpLevel(char) + 1);
+    return (
+      30 + (char.strength + char.tenacity) * (getExpLevel(state)(char) + 1)
+    );
   };
 }
 
 // given monster, returns that monsters experience points
-function getExpFromMonst(/* state */) {
+function getExpFromMonst(state) {
   return monster => {
     return Math.round(
       ((monster.strength + monster.tenacity + monster.speed + monster.intel) *
-        (getExpLevel(monster) + 1)) /
+        (getExpLevel(state)(monster) + 1)) /
         3
     );
   };
@@ -238,7 +240,7 @@ function battle({ dispatch }, { index, attacker }) {
     : !damage
     ? 'Missed!'
     : `+${damage} attack!`;
-  dispatch('player.addPlayerAlert', message);
+  dispatch('player/addPlayerAlert', message);
 
   sleep(300).then(() => dispatch('monsters/monsterFlashOver', index));
 

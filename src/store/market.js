@@ -1,11 +1,14 @@
 import { randomGold, getArmor, getWeapon } from '../lib/utils';
+import { TOWN_EVERY } from '../lib/constants';
 
 const state = () => ({
   market: createMarket(0),
+  playerLevel: 0,
 });
 
 const getters = {
   market: state => state.market,
+  currentMarket: state => state.market[state.playerLevel / TOWN_EVERY],
 };
 
 const mutations = {

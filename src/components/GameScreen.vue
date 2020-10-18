@@ -66,14 +66,21 @@ export default {
   },
   watch: {
     movesRemain(val) {
+      console.log('watcher');
       if (val > 0) return;
+      console.log('a');
       //this.props.resetPlayerMoves();
       // check to see if any monsters on non-foggy squares
       let countMonst = 0;
+      console.log('b');
       const currentWorld = this.currentWorld;
+      console.log('c');
       const currentMonsters = this.currentMonsters;
+      console.log(currentMonsters);
       currentMonsters
         .reduce((mList, m, i) => {
+          console.log('d');
+
           if (
             currentWorld[m.locale[0]][m.locale[1]].fog === 0 &&
             m.health > 0
@@ -85,6 +92,7 @@ export default {
         }, [])
         .forEach((mi, i) =>
           sleep((i + 1) * 200).then(() => {
+            console.log('monsterTurn!!!', mi);
             this.monsterTurn(mi);
           })
         );
@@ -124,13 +132,15 @@ export default {
       this.updateVisibility(target);
     },
     handleKeypress(e) {
+      const vm = this;
       function getCoords(fromLevel, toLevel) {
-        let nextLevel = this.getLevel(toLevel);
+        let nextLevel = vm.getLevel(toLevel);
         let coords;
         for (let r = 1; r < nextLevel.length - 1; r++) {
           for (let c = 1; c < nextLevel[1].length - 1; c++) {
             if (nextLevel[r][c].type === 'gate') {
-              //console.log("found a gate!!! at "+r+","+c)
+              // console.log('found a gate!!! at ' + r + ',' + c);
+
               if (nextLevel[r][c].toLevel === fromLevel) {
                 coords = [r, c];
                 // reset c and r to exit loop
@@ -141,7 +151,7 @@ export default {
             }
           }
         }
-        //console.log("Level: "+toLevel+ " coords: "+coords)
+        // console.log('Level: ' + toLevel + ' coords: ' + coords);
         return coords;
       }
 
@@ -152,7 +162,7 @@ export default {
       let tarCell;
       let kp = e.keyCode || e.which;
       let dir; // [row direction, col direction]
-      //console.log(kp)
+      console.log(kp);
       switch (kp) {
         case 55: // 7
           dir = [-1, -1];
@@ -192,41 +202,52 @@ export default {
           dir = undefined;
       }
       if (!dir) return;
+
       // targetCell is potential future location of player
       tarCell = [currCell[0] + dir[0], currCell[1] + dir[1]];
+
       // does player have any moves left???
       if (this.movesRemain === 0) {
         //console.log("no more moves");
         return;
       }
-      // if targetCell is a wall...
+
+      // if leaving market...
       if (currentWorld[currCell[0]][currCell[1]].type === 'market') {
         if (currentWorld[tarCell[0]][tarCell[1]].type !== 'market')
           this.setDisplayMarket(false);
         if (this.displaySetByMarket) this.setDisplayGear(false);
       }
 
+      // if targetCell is a wall...
       if (currentWorld[tarCell[0]][tarCell[1]].type === 'wall') {
+        console.log('1');
         //console.log("you can't walk through walls!");
       }
+
       // if targetCell is a gate...
       else if (currentWorld[tarCell[0]][tarCell[1]].type === 'gate') {
+        console.log('2');
+
         let fromLevel = this.level;
         let toLevel = currentWorld[tarCell[0]][tarCell[1]].toLevel;
         this.movePlayerAction(tarCell); // move player onto gate
         this.changeLevel(toLevel); // change players level/location
         if (toLevel >= this.levels) {
           // if this level does not exist then...
-          //console.log("creating level "+toLevel)		//
+          // console.log('creating level ' + toLevel); //
           this.addNewLevel(toLevel); // create new level
           this.populateLevel(toLevel); // populate new level with monsters
           this.isTownLevel ? this.populateMarket(toLevel) : null;
         }
         this.movePlayerAction(getCoords(fromLevel, toLevel));
       }
+
       // if targetCell is a market...
       else if (currentWorld[tarCell[0]][tarCell[1]].type === 'market') {
-        console.log('lets barter!');
+        console.log('3');
+
+        // console.log('lets barter!');
         this.movePlayerAction(tarCell);
         if (!this.displayMarket) {
           this.setDisplayMarket(true);
@@ -238,8 +259,11 @@ export default {
           this.displaySetByMarket = false;
         }
       }
+
       // if targetCell is a monster...
       else if (this.isAliveMonster(tarCell) !== false) {
+        console.log('4');
+
         let m = this.isAliveMonster(tarCell);
         // check to see if player has any attacks left
         if (this.attacksRemain >= 1) {
@@ -256,15 +280,23 @@ export default {
           /// timed erase of alerts
           this.clearPlayerAlerts();
         } else this.movePlayerAction(currCell); //no more attacks: 'move' player to square already on
-      } else if (this.isDeadMonster(tarCell) !== false) {
+      }
+
+      // if targetCell is dead monster
+      else if (this.isDeadMonster(tarCell) !== false) {
+        console.log('5');
+
         //console.log("pick up items");
         this.pickUpItems(tarCell);
         this.movePlayerAction(tarCell);
         /// timed erase of alerts
         this.clearPlayerAlerts();
       }
+
       // if targetCell is open ground...
       else if (currentWorld[tarCell[0]][tarCell[1]].type === 'floor') {
+        console.log('6');
+
         this.movePlayerAction(tarCell);
       }
     },

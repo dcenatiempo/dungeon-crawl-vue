@@ -721,7 +721,7 @@ const SHADOW_LIST = Object.freeze([
   },
   {
     start: [3, 4],
-    full: [[]],
+    full: [],
     half: [
       [4, 4],
       [3, 5],

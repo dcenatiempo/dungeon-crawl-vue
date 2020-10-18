@@ -52,28 +52,37 @@ export default {
           tile?.vis &&
           tile?.fog < 1 &&
           !this.isPlayer &&
-          `${tile.toLevel + 1}`) ||
+          `${tile.toLevel}`) ||
         ''
       );
     },
     classes() {
-      return !this.tile
-        ? ''
-        : this.tile.type +
-            ' vis-' +
-            this.tile.vis +
-            (this.tile.fog >= 1
-              ? ' fog'
-              : (!this.isPlayer ? '' : ' player') +
-                (this.mID === false
-                  ? ''
-                  : this.isAliveMonster(this.cell) !== false
-                  ? this.currentMonsters[this.mID].flash
-                    ? ' monster damaged'
-                    : ' monster'
-                  : this.isDeadMonster(this.cell) === false
-                  ? ''
-                  : ' dead'));
+      if (!this.tile) return '';
+
+      let classes = this.tile.type + ' vis-' + this.tile.vis;
+
+      if (!this.tile.vis) return classes;
+
+      if (this.tile.fog >= 1) {
+        classes += ' fog';
+        return classes;
+      }
+
+      if (this.isPlayer) {
+        classes += ' player';
+        return classes;
+      }
+
+      if (this.mID === false) return classes;
+
+      if (this.isAliveMonster(this.cell) !== false) {
+        classes += this.currentMonsters[this.mID].flash
+          ? ' monster damaged'
+          : ' monster';
+      } else if (this.isDeadMonster(this.cell) !== false) {
+        classes += ' dead';
+      }
+      return classes;
     },
     styles() {
       const tileSize = this.tileSize;
