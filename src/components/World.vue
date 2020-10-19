@@ -1,16 +1,4 @@
 <template>
-  <!-- <div class="world-grid world">
-    <div v-for="(row, ri) in virtualWorld" :key="ri" class="row">
-      <Cell
-        v-for="(cell, ci) in row"
-        :key="`${ri}-${ci}`"
-        :cell="cell"
-        :is-player="isPlayer(cell)"
-        :m-i-d="isAnyMonster(cell)"
-        :in-bounds="isInBounds(cell)"
-      />
-    </div>
-  </div> -->
   <div class="world">
     <canvas
       id="canvas"

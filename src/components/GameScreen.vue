@@ -89,7 +89,9 @@ export default {
           })
         );
 
-      sleep(200 + countMonst * 200).then(() => {
+      const delay = countMonst ? 200 + countMonst * 200 : 0;
+
+      sleep(delay).then(() => {
         this.resetPlayerMoves();
       });
     },

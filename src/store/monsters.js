@@ -41,7 +41,6 @@ const actions = {
   takeItemFromMonster,
   monsterFlashOver,
   monsterTurn,
-  moveMonster,
   resetMoves,
   createMonster,
 };
@@ -258,9 +257,9 @@ function resetMoves({ state, commit, rootGetters }, id) {
 }
 
 // for monster index i, exaust moves, then attack
-async function monsterTurn({ state, dispatch, rootGetters }, mi) {
+async function monsterTurn({ dispatch, getters, rootGetters }, mi) {
   const currentWorld = rootGetters['world/currentWorld'];
-  const monsters = getters.currentMonsters(state);
+  const monsters = getters.currentMonsters;
   const m = monsters[mi];
   const pL = rootGetters['player/locale'];
   let mL = m.locale;
@@ -296,10 +295,9 @@ async function monsterTurn({ state, dispatch, rootGetters }, mi) {
     for (let t = 0; t < 3; t++) {
       if (
         currentWorld[target[t][0]][target[t][1]].type === 'floor' &&
-        !isAliveMonster(target[t]) &&
+        !getters.isAliveMonster(target[t]) &&
         !rootGetters['player/isPlayer'](target[t])
       ) {
-        dispatch('moveMonster', { iid: mi, target: target[t] });
         mL[0] = target[t][0];
         mL[1] = target[t][1];
         t = 3;
@@ -325,12 +323,4 @@ async function monsterTurn({ state, dispatch, rootGetters }, mi) {
     attacks--;
   }
   dispatch('resetMoves', mi);
-}
-
-function moveMonster({ state, commit }, { id, target }) {
-  const level = state.playerLevel;
-  let newMonsters = JSON.parse(JSON.stringify(state.monsters));
-  newMonsters[level][id].locale = target;
-  newMonsters[level][id].movesRemain -= 1;
-  commit('setMonsters', newMonsters);
 }
