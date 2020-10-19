@@ -237,7 +237,7 @@ function takeItemFromMonster({ state, commit }, { item, id }) {
   commit('setMonsters', newMonsters);
 }
 
-function monsterFlashOver({ state, commit }, { id }) {
+function monsterFlashOver({ state, commit }, id) {
   // locate monster
   const level = state.playerLevel;
   let newMonsters = JSON.parse(JSON.stringify(state.monsters));
@@ -258,9 +258,10 @@ function resetMoves({ state, commit, rootGetters }, id) {
 }
 
 // for monster index i, exaust moves, then attack
-async function monsterTurn({ dispatch, rootGetters }, mi) {
+async function monsterTurn({ state, dispatch, rootGetters }, mi) {
   const currentWorld = rootGetters['world/currentWorld'];
-  const m = getters.currentMonsters[mi];
+  const monsters = getters.currentMonsters(state);
+  const m = monsters[mi];
   const pL = rootGetters['player/locale'];
   let mL = m.locale;
   let moves = m.movesRemain;
@@ -274,7 +275,6 @@ async function monsterTurn({ dispatch, rootGetters }, mi) {
   }
   // max out monster moves
   function moveRecursive() {
-    console.count('monstermove');
     if (moves <= 0) return;
     if (isByPlayer(mL, pL)) return;
     // check moves
@@ -313,14 +313,18 @@ async function monsterTurn({ dispatch, rootGetters }, mi) {
 
   // max out monster attacks
   while (moves > 0 && attacks > 0 && isByPlayer(mL, pL)) {
-    const damage = await dispatch('battle', { index: mi, attacker: true });
-    dispatch('player/loseHealth', damage);
+    const damage = await dispatch(
+      'battle',
+      { index: mi, attacker: true },
+      { root: true }
+    );
+    dispatch('player/loseHealth', damage, { root: true });
     // timed erase of player alerts
-    dispatch('player/clearPlayerAlerts');
+    dispatch('player/clearPlayerAlerts', undefined, { root: true });
     moves--;
     attacks--;
   }
-  resetMoves(mi);
+  dispatch('resetMoves', mi);
 }
 
 function moveMonster({ state, commit }, { id, target }) {

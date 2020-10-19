@@ -50,6 +50,17 @@ export default {
 </script>
 
 <style lang="scss">
+html {
+  overflow: hidden;
+  height: 100%;
+}
+body {
+  height: 100%;
+  overflow: auto;
+  margin: 0;
+  background: #262626;
+}
+
 #dungeon-crawl {
   * {
     -webkit-box-sizing: border-box;
@@ -57,16 +68,6 @@ export default {
     -ms-box-sizing: border-box;
     box-sizing: border-box;
     font-family: Helvetica, sans-serif;
-  }
-  html {
-    overflow: hidden;
-    height: 100%;
-  }
-  body {
-    height: 100%;
-    overflow: auto;
-    margin: 0;
-    background: #262626;
   }
   .flex-row {
     display: flex;

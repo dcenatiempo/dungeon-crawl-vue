@@ -66,21 +66,14 @@ export default {
   },
   watch: {
     movesRemain(val) {
-      console.log('watcher');
       if (val > 0) return;
-      console.log('a');
       //this.props.resetPlayerMoves();
       // check to see if any monsters on non-foggy squares
       let countMonst = 0;
-      console.log('b');
       const currentWorld = this.currentWorld;
-      console.log('c');
       const currentMonsters = this.currentMonsters;
-      console.log(currentMonsters);
       currentMonsters
         .reduce((mList, m, i) => {
-          console.log('d');
-
           if (
             currentWorld[m.locale[0]][m.locale[1]].fog === 0 &&
             m.health > 0
@@ -92,7 +85,6 @@ export default {
         }, [])
         .forEach((mi, i) =>
           sleep((i + 1) * 200).then(() => {
-            console.log('monsterTurn!!!', mi);
             this.monsterTurn(mi);
           })
         );
@@ -162,7 +154,6 @@ export default {
       let tarCell;
       let kp = e.keyCode || e.which;
       let dir; // [row direction, col direction]
-      console.log(kp);
       switch (kp) {
         case 55: // 7
           dir = [-1, -1];
@@ -221,14 +212,11 @@ export default {
 
       // if targetCell is a wall...
       if (currentWorld[tarCell[0]][tarCell[1]].type === 'wall') {
-        console.log('1');
         //console.log("you can't walk through walls!");
       }
 
       // if targetCell is a gate...
       else if (currentWorld[tarCell[0]][tarCell[1]].type === 'gate') {
-        console.log('2');
-
         let fromLevel = this.level;
         let toLevel = currentWorld[tarCell[0]][tarCell[1]].toLevel;
         this.movePlayerAction(tarCell); // move player onto gate
@@ -245,8 +233,6 @@ export default {
 
       // if targetCell is a market...
       else if (currentWorld[tarCell[0]][tarCell[1]].type === 'market') {
-        console.log('3');
-
         // console.log('lets barter!');
         this.movePlayerAction(tarCell);
         if (!this.displayMarket) {
@@ -262,8 +248,6 @@ export default {
 
       // if targetCell is a monster...
       else if (this.isAliveMonster(tarCell) !== false) {
-        console.log('4');
-
         let m = this.isAliveMonster(tarCell);
         // check to see if player has any attacks left
         if (this.attacksRemain >= 1) {
@@ -284,8 +268,6 @@ export default {
 
       // if targetCell is dead monster
       else if (this.isDeadMonster(tarCell) !== false) {
-        console.log('5');
-
         //console.log("pick up items");
         this.pickUpItems(tarCell);
         this.movePlayerAction(tarCell);
@@ -295,8 +277,6 @@ export default {
 
       // if targetCell is open ground...
       else if (currentWorld[tarCell[0]][tarCell[1]].type === 'floor') {
-        console.log('6');
-
         this.movePlayerAction(tarCell);
       }
     },

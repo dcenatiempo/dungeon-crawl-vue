@@ -212,15 +212,16 @@ function getExpFromMonst(state) {
  *******************************************************************************/
 // returns damage from battle with monster[i].
 // attacker is boolean that answers "is the monster the attacker?"
-function battle({ dispatch }, { index, attacker }) {
-  const monster = monsters.getters.currentMonsters[index];
+function battle({ dispatch, getters }, { index, attacker }) {
+  const monster = getters['monsters/currentMonsters'][index];
   let attackPoints = attacker
-    ? getAttackPoints(monster)
-    : player.getters.attackPoints;
+    ? getters.getAttackPoints(monster)
+    : getters['player/attackPoints'];
+  let defense = !attacker
+    ? getters.getDefense(monster)
+    : getters['player/defense'];
 
-  let defense = !attacker ? getDefense(monster) : player.gettters.defense;
-
-  let dodge = !attacker ? getDodge(monster) : player.getters.dodge;
+  let dodge = !attacker ? getters.getDodge(monster) : getters['player/dodge'];
 
   let damage = Math.round(attackPoints * (1 - defense));
 
@@ -241,7 +242,7 @@ function battle({ dispatch }, { index, attacker }) {
     ? 'Missed!'
     : `+${damage} attack!`;
   dispatch('player/addPlayerAlert', message);
-
+  console.log(index);
   sleep(300).then(() => dispatch('monsters/monsterFlashOver', index));
 
   return damage;

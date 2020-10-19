@@ -35,7 +35,7 @@ const actions = {
 
     commit('setWorld', newWorld);
   },
-  updateVisibility({ state }, target) {
+  updateVisibility({ state, getters }, target) {
     const level = state.playerLevel;
     if (level % TOWN_EVERY <= 0) return;
 
@@ -79,9 +79,8 @@ const actions = {
               rShadAbs = -shadows[i].full[j][0] + target[0];
               cShadAbs = shadows[i].full[j][1] + target[1];
             }
-            if (isInBounds([rShadAbs, cShadAbs])) {
+            if (getters.isInBounds([rShadAbs, cShadAbs])) {
               dungeon[rShadAbs][cShadAbs].fog += 1;
-              // console.log('full fog added');
             }
           }
           for (let j = 0; j < shadows[i].half.length; j++) {
@@ -111,9 +110,8 @@ const actions = {
               rShadAbs = -shadows[i].half[j][0] + target[0];
               cShadAbs = shadows[i].half[j][1] + target[1];
             }
-            if (isInBounds([rShadAbs, cShadAbs])) {
+            if (getters.isInBounds([rShadAbs, cShadAbs])) {
               dungeon[rShadAbs][cShadAbs].fog += 0.5;
-              // console.log('half fog added');
             }
           }
         }
@@ -125,7 +123,7 @@ const actions = {
       let cRel = coords[1];
       let rAbs = rRel + target[0];
       let cAbs = cRel + target[1];
-      if (isInBounds([rAbs, cAbs])) {
+      if (getters.isInBounds([rAbs, cAbs])) {
         if (dungeon[rAbs][cAbs].type === 'wall') {
           // mark shadows
           if (
@@ -203,8 +201,10 @@ const actions = {
     // reset fog
     for (let i = -(shadowSize + 1); i <= shadowSize + 1; i++) {
       for (let j = -(shadowSize + 1); j <= shadowSize + 1; j++) {
-        if (isInBounds([target[0] + i, target[1] + j])) {
-          dungeon[target[0] + i][target[1] + j].fog = 1;
+        const x = target[0] + i;
+        const y = target[1] + j;
+        if (getters.isInBounds([x, y])) {
+          dungeon[x][y].fog = 1;
         }
       }
     }
@@ -303,7 +303,6 @@ function createDungeonLevel(toLevel) {
     newLevel[y > rows - 2 ? rows - 2 : y][x > cols - 2 ? cols - 2 : x].toLevel =
       exits === 0 ? toLevel - 1 : toLevel + 1;
     exits++;
-    //console.log("exit placed at "+y+","+x)
   }
   // create blank canvas (all walls)
   for (let r = 0; r < rows; r++) {
@@ -391,14 +390,9 @@ function isInBounds(state) {
     const currentWorld = getters.currentWorld(state);
     const rows = currentWorld.length;
     const cols = currentWorld[0].length;
-    if (
-      target[0] >= 0 &&
-      target[1] >= 0 &&
-      target[0] < rows &&
-      target[1] < cols
-    )
-      return true;
-    else return false;
+    return (
+      target[0] >= 0 && target[1] >= 0 && target[0] < rows && target[1] < cols
+    );
   };
 }
 

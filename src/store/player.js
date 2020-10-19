@@ -126,6 +126,21 @@ const mutations = {
   setBody(state, val) {
     state.body = val;
   },
+  setStrength(state, val) {
+    state.strength = val;
+  },
+  setSpeed(state, val) {
+    state.speed = val;
+  },
+  setTenacity(state, val) {
+    state.tenacity = val;
+  },
+  setIntel(state, val) {
+    state.intel = val;
+  },
+  setHealth(state, val) {
+    state.health = val;
+  },
 };
 
 const actions = {
@@ -172,7 +187,7 @@ const actions = {
   },
   pickUpItem: ({ commit, dispatch }, { item, id }) => {
     // Take item from monster
-    dispatch('monsters/takeItemFromMonster', { item, id });
+    dispatch('monsters/takeItemFromMonster', { item, id }, { root: true });
     // And put in player's hand or mouth
     commit('setHand', [item]);
   },
@@ -258,8 +273,8 @@ const actions = {
     newHand.splice(i, 1);
     commit('setHand', newHand);
   },
-  pickUpItems: ({ getters, dispatch }, target) => {
-    const monsters = getters.currentMonsters;
+  pickUpItems: ({ getters, rootGetters, dispatch }, target) => {
+    const monsters = rootGetters['monsters/currentMonsters'];
     //console.log("pick up items at "+target);
     // find all monsters on square
     const monstIDs = [];
@@ -314,7 +329,10 @@ const actions = {
         }
       }
       // auto pick up weapon
-      if (weapon.rarity >= getters.rarityTolerance && weapon.name != 'fist') {
+      if (
+        weapon.rarity >= rootGetters['app/rarityTolerance'] &&
+        weapon.name != 'fist'
+      ) {
         if (getters.body.filter(i => i.type === 'weapon')[0].name === 'fist') {
           // console.log("pick up and arm "+ weapon.name);
           dispatch('addPlayerAlert', '+ new weapon');
@@ -328,7 +346,7 @@ const actions = {
         }
       }
       // auto pick up armor
-      if (armor.rarity >= getters.rarityTolerance) {
+      if (armor.rarity >= rootGetters['app/rarityTolerance']) {
         if (getters.body.find(i => i.type == [armor.type]) === undefined) {
           // console.log(`pick up and arm ${armor.material} ${armor.name}`);
           dispatch('addPlayerAlert', `+ new ${armor.material} armor`);
