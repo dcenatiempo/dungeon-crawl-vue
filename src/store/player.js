@@ -1,4 +1,4 @@
-import { biggest, smallest } from '../lib/utils';
+import { biggest, smallest, sleep } from '../lib/utils';
 import { WEAPON_LIST } from '../lib/constants';
 
 // import { rarityTolerance } from './app';
@@ -188,8 +188,9 @@ const actions = {
   },
   clearPlayerAlerts: ({ state, dispatch }) => {
     clearTimeout(timerVar);
+    sleep(100).then(() => dispatch('playerFlashOver'));
     timerVar = setInterval(() => {
-      dispatch('playerFlashOver');
+      console.log(state.alerts);
       state.alerts.length === 0 ? clearTimeout(timerVar) : null;
     }, biggest(900 - state.alerts.length * 100, 200));
   },

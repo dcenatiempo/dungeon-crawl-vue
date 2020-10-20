@@ -21,6 +21,7 @@ const colors = {
   gate: 'rgba(128, 1, 128, 1)',
   monster: 'rgba(162, 42, 42, 1)',
   dead: 'rgba(128, 128, 0, 1)',
+  flash: 'rgba(200, 200, 200, 1)',
 };
 
 // import Cell from './Cell.vue';
@@ -39,7 +40,7 @@ export default {
   computed: {
     ...mapGetters('app', ['grid', 'tileSize']),
     ...mapGetters('world', ['currentWorld', 'isTownLevel', 'isInBounds']),
-    ...mapGetters('player', ['locale', 'isPlayer']),
+    ...mapGetters('player', ['locale', 'isPlayer', 'alerts', 'flash']),
     ...mapGetters('monsters', [
       'isAnyMonster',
       'currentMonsters',
@@ -81,6 +82,11 @@ export default {
     currentMonsters() {
       this.drawWorld();
     },
+    alerts() {},
+    flash() {
+      console.log('flash');
+      this.drawWorld();
+    },
   },
   mounted() {
     this.canvas = document.getElementById('canvas');
@@ -107,7 +113,8 @@ export default {
       const x = (size + this.tileBorder) * ci; // x coordinate
       const y = (size + this.tileBorder) * ri; // y coordinate
       let color = colors[tile.type];
-      if (this.isPlayer(cell)) color = colors.player;
+      if (this.isPlayer(cell))
+        color = this.flash ? colors.flash : colors.player;
       else if (this.isAliveMonster(cell)) color = colors.monster;
       else if (this.isDeadMonster(cell)) color = colors.dead;
       color = tile.fog < 1 ? color : this.fog(color);
