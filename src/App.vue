@@ -1,8 +1,8 @@
 <template>
   <div id="dungeon-crawl">
-    <StartScreen v-if="screen === 'start'" />
+    <StartScreen v-if="screen === 'start'" @start="screen = 'game'" />
     <SetupScreen v-if="screen === 'setup'" />
-    <GameScreen v-if="screen === 'game'" />
+    <GameScreen v-if="screen === 'game'" @restart="screen = 'start'" />
   </div>
 </template>
 
@@ -18,7 +18,7 @@ export default {
     GameScreen,
   },
   data: () => ({
-    screen: 'game', // 'start', 'setup', 'game'
+    screen: 'start', // 'start', 'setup', 'game'
   }),
   computed: {},
   mounted() {

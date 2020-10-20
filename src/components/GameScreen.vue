@@ -57,6 +57,7 @@ export default {
       'locale',
       'movesRemain',
       'attacksRemain',
+      'health',
     ]),
     ...mapGetters('monsters', [
       'currentMonsters',
@@ -65,6 +66,9 @@ export default {
     ]),
   },
   watch: {
+    health(health) {
+      if (health <= 0) this.restartGame();
+    },
     movesRemain(val) {
       if (val > 0) return;
       // check to see if any monsters on non-foggy squares
@@ -102,7 +106,7 @@ export default {
     window.removeEventListener('keydown', this.handleKeypress);
   },
   methods: {
-    ...mapActions(['battle']),
+    ...mapActions(['battle', 'restart']),
     ...mapActions('player', [
       'changeLevel',
       'movePlayer',
@@ -123,6 +127,10 @@ export default {
     movePlayerAction(target) {
       this.movePlayer(target);
       this.updateVisibility(target);
+    },
+    restartGame() {
+      this.$emit('restart');
+      this.restart();
     },
     handleKeypress(e) {
       const vm = this;

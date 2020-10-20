@@ -21,6 +21,10 @@ const mutations = {
 };
 
 const actions = {
+  restart({ commit }) {
+    commit('setMarket', createMarket(0));
+    commit('setLevel', 0);
+  },
   populateMarket({ state, commit }, level) {
     const newMarket = JSON.parse(JSON.stringify(state.market));
 

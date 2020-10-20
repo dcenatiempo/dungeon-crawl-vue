@@ -1,7 +1,7 @@
 import { sleep } from '../lib/utils';
 import { TILE_BORDER } from '../lib/constants';
 
-const state = () => ({
+const defaultState = {
   tileSize: 25,
   rarityTolerance: 0, // weapons/armor below this rarity will be ignored
   playerBuilt: true, // becomes true after initial setup
@@ -13,7 +13,8 @@ const state = () => ({
   displayMarket: false,
   displayGear: false,
   dimensions: { h: 0, w: 0 },
-});
+};
+const state = () => ({ ...defaultState });
 
 const getters = {
   tileSize: state => state.tileSize,
@@ -31,6 +32,9 @@ const getters = {
 };
 
 const mutations = {
+  restart(state) {
+    Object.assign(state, { ...defaultState, dimensions: state.dimensions });
+  },
   setTileSize(state, val) {
     state.tileSize = +val;
   },
@@ -67,6 +71,9 @@ const mutations = {
 };
 
 const actions = {
+  restart: ({ commit }) => {
+    commit('restart');
+  },
   updateToolTip({ state, commit }, { mouseX, mouseY, toolTipObject }) {
     commit('setMouseX', mouseX);
     commit('setMouseY', mouseY);

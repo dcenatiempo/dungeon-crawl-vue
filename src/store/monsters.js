@@ -36,6 +36,10 @@ const mutations = {
 };
 
 const actions = {
+  restart({ commit }) {
+    commit('setMonsters', [[]]);
+    commit('setLevel', 0);
+  },
   populateLevel,
   monsterLoseHealth,
   takeItemFromMonster,

@@ -37,6 +37,7 @@ export default new Vuex.Store({
   },
   actions: {
     battle,
+    restart,
   },
 });
 
@@ -241,9 +242,20 @@ function battle({ dispatch, getters }, { index, attacker }) {
     : !damage
     ? 'Missed!'
     : `+${damage} attack!`;
-  dispatch('player/addPlayerAlert', message);
+  dispatch('player/addPlayerAlert', message, { root: true });
   console.log(index);
-  sleep(300).then(() => dispatch('monsters/monsterFlashOver', index));
+  sleep(300).then(() =>
+    dispatch('monsters/monsterFlashOver', index, { root: true })
+  );
 
   return damage;
+}
+
+function restart({ dispatch }) {
+  console.log('pizza');
+  dispatch('app/restart', { root: true });
+  dispatch('market/restart', { root: true });
+  dispatch('monsters/restart', { root: true });
+  dispatch('world/restart', { root: true });
+  dispatch('player/restart', { root: true });
 }

@@ -5,7 +5,7 @@ import { WEAPON_LIST } from '../lib/constants';
 
 let timerVar;
 
-const state = () => ({
+const defaultState = {
   type: 'player',
   name: 'Devin',
   level: 0, // current dungeon level location :town
@@ -59,7 +59,9 @@ const state = () => ({
   hand: [], // temp storing place when moving items
   flash: false, // flashes true if being attacked - for animation
   alerts: [], //['+5 Food', '+20 Gold',
-});
+};
+
+const state = () => ({ ...defaultState });
 
 const getters = {
   type: state => state.type,
@@ -96,6 +98,9 @@ const getters = {
 };
 
 const mutations = {
+  restart(state) {
+    Object.assign(state, { ...defaultState });
+  },
   setLocale(state, val) {
     state.locale = val;
   },
@@ -152,6 +157,9 @@ const actions = {
   //   getters,
   //   rootGetters,
   // }) => {},
+  restart: ({ commit }) => {
+    commit('restart');
+  },
   movePlayer: ({ state, commit }, target) => {
     commit('setLocale', target);
     commit('setMovesRemain', state.movesRemain - 1);

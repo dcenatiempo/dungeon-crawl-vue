@@ -26,6 +26,10 @@ const mutations = {
 };
 
 const actions = {
+  restart({ commit }) {
+    commit('setWorld', [createTownLevel(0)]);
+    commit('setLevel', 0);
+  },
   addNewLevel({ state, commit }, toLevel) {
     const level = state.playerLevel;
     let newWorld = JSON.parse(JSON.stringify(state.world));
