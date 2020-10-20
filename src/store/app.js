@@ -1,4 +1,5 @@
 import { sleep } from '../lib/utils';
+import { TILE_BORDER } from '../lib/constants';
 
 const state = () => ({
   tileSize: 25,
@@ -26,12 +27,12 @@ const getters = {
   displayMarket: state => state.displayMarket,
   displayGear: state => state.displayGear,
   dimensions: state => state.dimensions,
-  grid: state => getGridSize(state.dimensions, state.tileSize, false, false),
+  grid: state => getGridSize(state.dimensions, state.tileSize),
 };
 
 const mutations = {
   setTileSize(state, val) {
-    state.tileSize = val;
+    state.tileSize = +val;
   },
   setRarityTolerance(state, val) {
     state.rarityTolerance = val;
@@ -85,16 +86,12 @@ export default { state, getters, mutations, actions, namespaced: true };
  *
  *******************************************************************************/
 
-function getGridSize(window, cellSize, lsidebar, rsidebar) {
+function getGridSize(window, cellSize) {
   let headerH = 50; // header height in pixels
   let footerH = 0; // footer height in pixels
-  let lsb = lsidebar ? 0.3 : 0; // sidebar width in %
-  let rsb = rsidebar ? 0.3 : 0; // sidebar width in %
-  let cellMargin = cellSize / 12.5; // margin between tiles
+  let cellMargin = cellSize * TILE_BORDER; // margin between tiles
   let tileSize = +cellSize + 2 * cellMargin; // add margin to tilesize
-  let rows = Math.round(
-    (window.h - headerH - footerH - 2 * tileSize) / tileSize
-  );
-  let cols = Math.round((window.w * (1 - lsb - rsb) - 2 * tileSize) / tileSize);
+  let rows = Math.ceil((window.h - headerH - footerH) / tileSize);
+  let cols = Math.ceil(window.w / tileSize);
   return { height: rows, width: cols };
 }

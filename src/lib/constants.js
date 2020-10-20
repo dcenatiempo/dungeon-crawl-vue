@@ -5,7 +5,10 @@ export {
   GEAR_LIST,
   SHADOW_LIST,
   TOWN_EVERY,
+  TILE_BORDER,
 };
+const TILE_BORDER = 0.08;
+
 const TOWN_EVERY = 5;
 
 const MONSTER_LIST = Object.freeze([

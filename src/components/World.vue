@@ -25,6 +25,7 @@ const colors = {
 
 // import Cell from './Cell.vue';
 import { add } from '../lib/utils';
+import { TILE_BORDER } from '../lib/constants';
 
 export default {
   components: {
@@ -46,19 +47,19 @@ export default {
       'isDeadMonster',
     ]),
     tileBorder() {
-      return this.tileSize / 10;
+      return this.tileSize * TILE_BORDER;
     },
     virtualWorld() {
       let { height, width } = this.grid;
+      // top left corner
       let start = [
-        Math.round(this.locale[0] - height / 2) + 1,
+        Math.round(this.locale[0] - height / 2),
         Math.round(this.locale[1] - width / 2),
-      ]; // top left corner
+      ];
       if (this.isTownLevel) {
         start[0] = -2;
         start[1] = Math.round(this.currentWorld.length / 2 - width / 2);
       }
-      if (height < 11) start[0] -= 2;
       let end = add(start, [height, width]);
       let virtualWorld = [];
       let i = 0;
@@ -74,7 +75,8 @@ export default {
   },
   watch: {
     virtualWorld() {
-      this.drawWorld();
+      const vm = this;
+      setTimeout(() => vm.drawWorld());
     },
     currentMonsters() {
       this.drawWorld();
@@ -83,6 +85,9 @@ export default {
   mounted() {
     this.canvas = document.getElementById('canvas');
     this.ctx = this.canvas.getContext('2d');
+    const vm = this;
+    // no initial render without setTimeout
+    setTimeout(() => vm.drawWorld());
   },
   methods: {
     handleClick() {},
@@ -94,13 +99,13 @@ export default {
       // is it in the bounds of the world?
       if (!this.isInBounds(cell)) return;
 
-      const tile = this.currentWorld[cell[0]][cell[1]];
+      const tile = this.currentWorld?.[cell[0]]?.[cell[1]] || {};
       // is it visiible by the player?
       if (!tile.vis) return;
 
-      const size = this.tileSize;
+      const size = this.tileSize - this.tileBorder;
       const x = (size + this.tileBorder) * ci; // x coordinate
-      const y = (size + this.tileBorder) * (ri + 0.5); // y coordinate
+      const y = (size + this.tileBorder) * ri; // y coordinate
       let color = colors[tile.type];
       if (this.isPlayer(cell)) color = colors.player;
       else if (this.isAliveMonster(cell)) color = colors.monster;

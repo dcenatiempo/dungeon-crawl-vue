@@ -67,7 +67,6 @@ export default {
   watch: {
     movesRemain(val) {
       if (val > 0) return;
-      //this.props.resetPlayerMoves();
       // check to see if any monsters on non-foggy squares
       let countMonst = 0;
       const currentWorld = this.currentWorld;
