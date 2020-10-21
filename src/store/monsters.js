@@ -303,9 +303,10 @@ async function monsterTurn({ dispatch, getters, rootGetters }, mi) {
       { index: mi, attacker: true },
       { root: true }
     );
-    dispatch('player/loseHealth', damage, { root: true });
-    // timed erase of player alerts
-    dispatch('player/clearPlayerAlerts', undefined, { root: true });
+
+    if (damage) {
+      dispatch('player/loseHealth', damage, { root: true });
+    }
     moves--;
     attacks--;
   }

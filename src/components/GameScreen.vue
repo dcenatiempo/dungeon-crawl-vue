@@ -108,7 +108,6 @@ export default {
     ...mapActions('player', [
       'changeLevel',
       'movePlayer',
-      'clearPlayerAlerts',
       'gainExperience',
       'useAttack',
       'pickUpItems',
@@ -270,8 +269,6 @@ export default {
             //this.props.addPlayerAlert(("+"+getExpFromMonst(currentMonsters[m])+" experience"))
             this.gainExperience(this.getExpFromMonst(currentMonsters[mi]));
           }
-          /// timed erase of alerts
-          this.clearPlayerAlerts();
         } else this.movePlayerAction(currCell); //no more attacks: 'move' player to square already on
       }
 
@@ -280,8 +277,6 @@ export default {
         //console.log("pick up items");
         this.pickUpItems(tarCell);
         this.movePlayerAction(tarCell);
-        /// timed erase of alerts
-        this.clearPlayerAlerts();
       }
 
       // if targetCell is open ground...

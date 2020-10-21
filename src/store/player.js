@@ -57,7 +57,7 @@ const defaultState = {
     },
   ],
   hand: [], // temp storing place when moving items
-  flash: false, // flashes true if being attacked - for animation
+  flash: 0, // flashes true if being attacked - for animation
   alerts: [], //['+5 Food', '+20 Gold',
 };
 
@@ -79,7 +79,7 @@ const getters = {
   body: state => state.body,
   bag: state => state.bag,
   hand: state => state.hand,
-  flash: state => state.flash,
+  flash: state => state.flash % 2 === 1, // flashes on odds
   alerts: state => state.alerts,
   gold: state => state.bag.find(item => item.type === 'gold')?.amount,
   food: state => state.bag.find(item => item.type === 'food')?.amount,
@@ -172,6 +172,14 @@ const actions = {
   },
   loseHealth: ({ state, commit }, damage) => {
     commit('setHealth', state.health - damage);
+
+    commit('setFlash', state.flash + 2);
+
+    clearTimeout(timerVar);
+    timerVar = setInterval(() => {
+      state.flash <= 0 ? clearTimeout(timerVar) : null;
+      commit('setFlash', state.flash - 1);
+    }, 100);
   },
   changeLevel: ({ state, commit }, toLevel) => {
     commit('setLevel', toLevel);
@@ -183,17 +191,20 @@ const actions = {
   gainExperience: ({ state, commit }, exp) => {
     commit('setExperience', state.experience + exp);
   },
-  addPlayerAlert: ({ state, commit }, alert) => {
+  addPlayerAlert: ({ state, commit, dispatch }, alert) => {
     const newAlerts = [alert, ...state.alerts];
     commit('setAlerts', newAlerts);
-    commit('setFlash', true);
+    dispatch('clearPlayerAlerts');
   },
-  clearPlayerAlerts: ({ state, dispatch }) => {
+  clearPlayerAlerts: ({ state, commit }) => {
+    if (!state.alerts?.length) return;
     clearTimeout(timerVar);
     timerVar = setInterval(() => {
       console.log(state.alerts);
-      dispatch('playerFlashOver');
-      state.alerts.length === 0 ? clearTimeout(timerVar) : null;
+      const newAlerts = [...state.alerts];
+      newAlerts.pop();
+      commit('setAlerts', newAlerts);
+      newAlerts.length === 0 ? clearTimeout(timerVar) : null;
     }, biggest(900 - state.alerts.length * 100, 200));
   },
   // put item in hand
@@ -391,12 +402,6 @@ const actions = {
   resetMoves: ({ state, commit }) => {
     commit('setMovesRemain', maxMoves(state));
     commit('setAttacksRemain', maxAttacks(state));
-  },
-  playerFlashOver: ({ state, commit }) => {
-    const newAlerts = [...state.alerts];
-    newAlerts.pop();
-    commit('setFlash', newAlerts.length === 0 ? false : true);
-    commit('setAlerts', newAlerts);
   },
 };
 

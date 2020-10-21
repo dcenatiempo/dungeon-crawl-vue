@@ -243,9 +243,12 @@ function battle({ dispatch, getters }, { index, attacker }) {
     ? 'Missed!'
     : `+${damage} attack!`;
   dispatch('player/addPlayerAlert', message, { root: true });
-  sleep(300).then(() =>
-    dispatch('monsters/monsterFlashOver', index, { root: true })
-  );
+
+  if (attacker) {
+    sleep(300).then(() =>
+      dispatch('monsters/monsterFlashOver', index, { root: true })
+    );
+  }
 
   return damage;
 }
