@@ -32,23 +32,36 @@ const actions = {
 
     commit('setMarket', newMarket);
   },
-  buy({ state, commit }, { marketId, gold, item }) {
+  sellToMarket({ state, rootGetters, commit }, { item }) {
     const newMarket = JSON.parse(JSON.stringify(state.market));
+    const marketId = state.playerLevel / TOWN_EVERY;
+    const gold = rootGetters.getPlayerPrice(item);
 
     if (item.type === 'food') newMarket[marketId].bag[0].amount += 1;
     else newMarket[marketId].bag.push(item);
+
     newMarket[marketId].gold -= gold;
 
     commit('setMarket', newMarket);
+    debugger;
+    return { type: 'gold', amount: gold };
   },
-  sell({ state, commit }, { marketId, gold, id }) {
+  buyFromMarket({ state, commit }, { gold, index }) {
     const newMarket = JSON.parse(JSON.stringify(state.market));
+    const marketId = state.playerLevel / TOWN_EVERY;
+    let item = { ...newMarket[marketId].bag[index] };
+    if (item.type === 'food') {
+      newMarket[marketId].bag[index].amount -= 1;
+      item.amount = 1;
+    } else {
+      newMarket[marketId].bag.splice(index, 1);
+    }
 
-    if (id == 0) newMarket[marketId].bag[0].amount -= 1;
-    else newMarket[marketId].bag.splice(id, 1);
     newMarket[marketId].gold += gold;
 
     commit('setMarket', newMarket);
+
+    return item;
   },
 };
 

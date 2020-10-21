@@ -1,7 +1,7 @@
 <template>
   <div class="gear modal-box">
     <h3>Armed Gear</h3>
-    <ModalLabelRow box="body" is-market="displayMarket" />
+    <ModalLabelRow box="body" :is-market="displayMarket" />
     <template v-for="(thing, i) in body">
       <ModalContentRow
         :key="i"

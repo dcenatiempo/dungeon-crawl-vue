@@ -125,15 +125,15 @@ function getCarryAmount(/* state */) {
   };
 }
 
-function getMarketPrice(/* state */) {
+function getMarketPrice(state) {
   return item => {
-    return getPrice(item, 1.25);
+    return getPrice(state)({ item, dif: 1.25 });
   };
 }
 
-function getPlayerPrice(/* state */) {
+function getPlayerPrice(state) {
   return item => {
-    return getPrice({ item, dif: 0.75 });
+    return getPrice(state)({ item, dif: 0.75 });
   };
 }
 
@@ -243,7 +243,6 @@ function battle({ dispatch, getters }, { index, attacker }) {
     ? 'Missed!'
     : `+${damage} attack!`;
   dispatch('player/addPlayerAlert', message, { root: true });
-  console.log(index);
   sleep(300).then(() =>
     dispatch('monsters/monsterFlashOver', index, { root: true })
   );
@@ -252,7 +251,6 @@ function battle({ dispatch, getters }, { index, attacker }) {
 }
 
 function restart({ dispatch }) {
-  console.log('pizza');
   dispatch('app/restart', { root: true });
   dispatch('market/restart', { root: true });
   dispatch('monsters/restart', { root: true });

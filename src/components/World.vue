@@ -41,12 +41,7 @@ export default {
     ...mapGetters('app', ['grid', 'tileSize']),
     ...mapGetters('world', ['currentWorld', 'isTownLevel', 'isInBounds']),
     ...mapGetters('player', ['locale', 'isPlayer', 'alerts', 'flash']),
-    ...mapGetters('monsters', [
-      'isAnyMonster',
-      'currentMonsters',
-      'isAliveMonster',
-      'isDeadMonster',
-    ]),
+    ...mapGetters('monsters', ['isMonster', 'currentMonsters']),
     tileBorder() {
       return this.tileSize * TILE_BORDER;
     },
@@ -84,7 +79,6 @@ export default {
     },
     alerts() {},
     flash() {
-      console.log('flash');
       this.drawWorld();
     },
   },
@@ -106,7 +100,7 @@ export default {
       if (!this.isInBounds(cell)) return;
 
       const tile = this.currentWorld?.[cell[0]]?.[cell[1]] || {};
-      // is it visiible by the player?
+      // is it visible by the player?
       if (!tile.vis) return;
 
       const size = this.tileSize - this.tileBorder;
@@ -115,8 +109,11 @@ export default {
       let color = colors[tile.type];
       if (this.isPlayer(cell))
         color = this.flash ? colors.flash : colors.player;
-      else if (this.isAliveMonster(cell)) color = colors.monster;
-      else if (this.isDeadMonster(cell)) color = colors.dead;
+
+      const monster = this.isMonster(cell);
+      if (monster?.isAlive)
+        color = monster.hasFlash ? colors.flash : colors.monster;
+      else if (monster?.hasGear) color = colors.dead;
       color = tile.fog < 1 ? color : this.fog(color);
       this.ctx.fillStyle = color;
 

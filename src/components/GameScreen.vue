@@ -3,15 +3,15 @@
     <Header />
     <World />
     <template v-if="displayGear">
-      <sidebar id="l-sidebar" class="left-sidebar-grid">
+      <div id="l-sidebar" class="left-sidebar-grid">
         <Bag />
         <Gear />
-      </sidebar>
+      </div>
     </template>
     <template v-if="displayMarket">
-      <sidebar id="r-sidebar" class="right-sidebar-grid">
+      <div id="r-sidebar" class="right-sidebar-grid">
         <Market />
-      </sidebar>
+      </div>
     </template>
     <h1 class="dungeon-title footer-grid">
       {{ isTownLevel ? 'Town' : 'Dungeon' }} Level {{ level + 1 }}
@@ -27,6 +27,7 @@ import Header from './Header';
 import World from './World';
 import Bag from './Bag';
 import Gear from './Gear';
+import Market from './Market';
 import Inspector from './Inspector';
 
 import { sleep } from '../lib/utils';
@@ -37,6 +38,7 @@ export default {
     World,
     Bag,
     Gear,
+    Market,
     Inspector,
   },
   props: {},
@@ -59,11 +61,7 @@ export default {
       'attacksRemain',
       'health',
     ]),
-    ...mapGetters('monsters', [
-      'currentMonsters',
-      'isDeadMonster',
-      'isAliveMonster',
-    ]),
+    ...mapGetters('monsters', ['currentMonsters', 'isMonster']),
   },
   watch: {
     health(health) {
@@ -219,6 +217,8 @@ export default {
         if (this.displaySetByMarket) this.setDisplayGear(false);
       }
 
+      const monster = this.isMonster(tarCell);
+
       // if targetCell is a wall...
       if (currentWorld[tarCell[0]][tarCell[1]].type === 'wall') {
         //console.log("you can't walk through walls!");
@@ -256,19 +256,19 @@ export default {
       }
 
       // if targetCell is a monster...
-      else if (this.isAliveMonster(tarCell) !== false) {
-        let m = this.isAliveMonster(tarCell);
+      else if (monster?.isAlive) {
+        let mi = monster.index;
         // check to see if player has any attacks left
         if (this.attacksRemain >= 1) {
           this.useAttack();
           //console.log("Attack "+currentMonsters[m].type+"!");
-          let damage = this.battle({ index: m, attacker: false });
-          this.monsterLoseHealth({ id: m, damage });
-          const monsterKilled = this.isAliveMonster(tarCell) === false;
+          let damage = this.battle({ index: mi, attacker: false });
+          this.monsterLoseHealth({ id: mi, damage });
+          const monsterKilled = !this.isMonster(mi)?.isAlive;
           if (monsterKilled) {
             //console.log("earn experience "+getExpFromMonst(currentMonsters[m]))
             //this.props.addPlayerAlert(("+"+getExpFromMonst(currentMonsters[m])+" experience"))
-            this.gainExperience(this.getExpFromMonst(currentMonsters[m]));
+            this.gainExperience(this.getExpFromMonst(currentMonsters[mi]));
           }
           /// timed erase of alerts
           this.clearPlayerAlerts();
@@ -276,7 +276,7 @@ export default {
       }
 
       // if targetCell is dead monster
-      else if (this.isDeadMonster(tarCell) !== false) {
+      else if (!monster?.isAlive && monster?.hasGear) {
         //console.log("pick up items");
         this.pickUpItems(tarCell);
         this.movePlayerAction(tarCell);

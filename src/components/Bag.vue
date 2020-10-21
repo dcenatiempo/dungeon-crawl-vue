@@ -8,7 +8,7 @@
         :index="i"
         :item="thing"
         box="bag"
-        is-market="displayMarket"
+        :is-market="displayMarket"
       />
     </template>
   </div>

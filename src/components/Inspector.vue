@@ -25,7 +25,7 @@
       </div>
     </div>
     <div
-      v-else-if="item.type === 'gate'"
+      v-else-if="isGate"
       class="modal-box test"
       :style="`top: ${top}; left: ${left} `"
     >
@@ -33,21 +33,21 @@
       <div>To level {{ item.toLevel + 1 }}</div>
     </div>
     <div
-      v-else-if="item.type === 'player'"
+      v-else-if="isPlayer"
       class="modal-box test"
       :style="`top: ${top}; left: ${left} `"
     >
       <Stats char="player" />
     </div>
     <div
-      v-else-if="isAliveMonster(item.locale) !== false"
+      v-else-if="isMonster && isMonster.isAlive"
       class="modal-box test"
       :style="`top: ${top}; left: ${left} `"
     >
       <Stats :char="item" />
     </div>
     <div
-      v-else-if="isDeadMonster(item.local) !== false"
+      v-else-if="isMonster && !isMonster.isAlive && !isMonster.hasGear"
       class="modal-box test"
       :style="`top: ${top}; left: ${left} `"
     >
@@ -75,12 +75,20 @@ export default {
   data: () => ({
     item: null,
     top: 0,
-    leftt: 0,
+    left: 0,
   }),
   computed: {
     ...mapGetters(['getMarketPrice']),
     ...mapGetters('app', ['toolTip', 'toolTipObject', 'mouseX', 'mouseY']),
-    ...mapGetters('monsters', ['isAliveMonster', 'isDeadMonster']),
+    isMonster() {
+      return this.$store.getters['monsters/isMonster'](this.item);
+    },
+    isPlayer() {
+      return this.item.type === 'player';
+    },
+    isGate() {
+      return this.item.type === 'gate';
+    },
   },
   watch: {
     toolTipObject() {

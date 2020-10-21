@@ -33,7 +33,7 @@
     </div>
     <div class="flex-col">
       <div>Health: {{ health }}/{{ maxHealth }}</div>
-      <div>Gold: {{ bag[0].amount }}</div>
+      <div>Gold: {{ gold }}</div>
     </div>
     <div class="flex-col">
       <div>Moves Remain: {{ movesRemain }}</div>
@@ -59,6 +59,8 @@ export default {
       'movesRemain',
       'attacksRemain',
       'bag',
+      'gold',
+      'food',
     ]),
   },
   watch: {},

@@ -1,13 +1,11 @@
 <template>
   <div class="modal-label-row">
-    <div class="modal-row">
-      <div class="label">Type</div>
-      <div class="label">Item</div>
-      <div class="label center">Bulk</div>
-      <div class="label center">{{ isMarket ? 'Price' : 'Act' }}</div>
-      <div class="label center">
-        {{ isMarket ? (box === 'market' ? 'Buy' : 'Sell') : 'Drop' }}
-      </div>
+    <div class="label">Type</div>
+    <div class="label">Item</div>
+    <div class="label center">Bulk</div>
+    <div class="label center">{{ isMarket ? 'Price' : 'Act' }}</div>
+    <div class="label center">
+      {{ isMarket ? (box === 'market' ? 'Buy' : 'Sell') : 'Drop' }}
     </div>
   </div>
 </template>

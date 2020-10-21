@@ -15,7 +15,7 @@
     </template>
 
     <template v-else>
-      <div v-if="!shouldDispay" class="box" />
+      <div v-if="!shouldDisplay" class="box" />
       <template v-else-if="box === 'bag'">
         <div v-if="item.type === 'gold' || item.type === 'rock'" class="box" />
         <template
@@ -33,7 +33,7 @@
           <button
             v-else
             class="box center"
-            @click="e => armItemInner({ label: e.target.innerHTML, id: index })"
+            @click="e => armItemInner({ label: e.target.innerHTML, index })"
           >
             {{ item.type === 'food' ? 'Eat' : 'Eqp' }}
           </button>
@@ -50,10 +50,11 @@
         <div v-else class="box" />
       </template>
     </template>
+
     <template v-if="isMarket">
       <template v-if="box === 'market'">
         <button
-          v-if="getMarketPrice(item) <= bag[0].amount"
+          v-if="getMarketPrice(item) <= gold"
           class="box"
           @click="buyItem(index)"
         >
@@ -61,7 +62,7 @@
         </button>
         <div v-else class="box" />
       </template>
-      <div v-else-if="!shouldDispay" class="box" />
+      <div v-else-if="!shouldDisplay" class="box" />
       <button v-else class="box" @click="sellItem(index)">Sell</button>
     </template>
     <div v-else-if="!shouldDisplay" class="box" />
@@ -72,7 +73,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 
-import { TOWN_EVERY } from '../lib/constants';
 import { smallest } from '../lib/utils';
 
 export default {
@@ -84,24 +84,37 @@ export default {
   },
   data: () => ({}),
   computed: {
-    ...mapGetters(['getPlayerPrice', 'getMarketPrice']),
-    ...mapGetters('player', ['level', 'goldCarryCapacity', 'hunger']),
+    ...mapGetters(['getPlayerPrice', 'getMarketPrice', 'getName']),
+    ...mapGetters('player', [
+      'level',
+      'carryCapacity',
+      'carryAmount',
+      'goldCarryCapacity',
+      'hunger',
+      'body',
+      'bag',
+      'gold',
+    ]),
     ...mapGetters('market', ['currentMarket']),
     shouldDisplay() {
       if (!this.item) return false;
 
       if (this.isMarket && this.box === 'market') {
-        if (this.getMarketPrice(this.item) >= this.bag[0].amount) return false;
+        if (this.getMarketPrice(this.item) >= this.gold) return false;
         else return !(this.item.type === 'food' && this.item.amount <= 0);
       } else if (
-        (this.type === 'gold' || this.type === 'food') &&
+        (this.item.type === 'gold' || this.item.type === 'food') &&
         this.amount <= 0
+      ) {
+        return false;
+      } else if (this.item.type === 'weapon' && this.item.name === 'fist')
+        return false;
+      else if (
+        (this.item.type === 'gold' || this.item.type === 'rock') &&
+        this.isMarket
       )
         return false;
-      else if (this.type === 'weapon' && this.name === 'fist') return false;
-      else if ((this.type === 'gold' || this.type === 'rock') && this.isMarket)
-        return false;
-      else if (this.type === 'ring' || this.name === 'wedding band')
+      else if (this.item.type === 'ring' || this.item.name === 'wedding band')
         return false;
       return true;
     },
@@ -122,53 +135,41 @@ export default {
       'dropItem',
       'armItem',
     ]),
-    ...mapActions('market', ['sell', 'buy']),
-    sellItem(e) {
-      let level = this.level;
-      let marketId = level / TOWN_EVERY;
-      let id = e.target.id;
-      let gold = this.getPlayerPrice(this.item);
-      let goldCapacity = this.goldCarryCapacity;
-      let amount = Math.round(smallest(gold, goldCapacity) * 100) / 100;
+    ...mapActions('market', ['buyFromMarket', 'sellToMarket']),
+    sellItem(index) {
+      const vm = this;
+      const removeOrPullItem = vm.box === 'body' ? vm.removeItem : vm.pullItem;
 
-      this.pickUpItem({ type: 'gold', amount }, null);
-      this.storeItem(0);
-
-      if (this.box === 'body') this.removeItem(id);
-      else if (this.box === 'bag') this.pullItem(id, 1);
-
-      this.dropItem(0);
-      this.buy({ marketId, gold, item: this.item });
+      removeOrPullItem({ index, amount: 1 })
+        .then(vm.dropItem)
+        .then(item => vm.sellToMarket({ item })) // item player is selling
+        .then(item => vm.pickUpItem({ item })) // item (gold) market is paying
+        .then(vm.storeItem);
     },
-    buyItem(id) {
-      let level = this.level;
-      let marketId = level / TOWN_EVERY;
+    buyItem(index) {
+      const vm = this;
       let gold = this.getMarketPrice(this.item);
-      this.pullItem(0, gold);
-      this.dropItem(0);
-      if (id == 0) this.pickUpItem({ type: 'food', amount: 1 }, null);
-      else this.pickUpItem(this.item, null);
-      this.storeItem(0);
-      this.sell({ marketId, gold, id });
+
+      this.pullItem({ index: 0, amount: gold })
+        .then(vm.dropItem)
+        .then(() => vm.sell({ gold, index }))
+        .then(vm.pickUpItem)
+        .then(vm.storeItem);
     },
-    armItemInner({ id, label }) {
-      let foodInHand = this.bag[id].amount;
-      this.pullItem(
-        id,
-        label === 'Eat' ? smallest(this.hunger, foodInHand) : 1
-      );
-      this.armItem(0);
+    armItemInner({ index, label }) {
+      const vm = this;
+      let foodInHand = this.bag[index].amount;
+      const amount = label === 'Eat' ? smallest(vm.hunger, foodInHand) : 1;
+      this.pullItem({ index, amount }).then(vm.armItem);
     },
-    storeItemInner(e) {
-      let id = e.target.id;
-      this.removeItem(id);
-      this.storeItem(0);
+    storeItemInner(index) {
+      const vm = this;
+      this.removeItem({ index }).then(vm.storeItem);
     },
-    dropItemInner(e) {
-      // rucksack and body???
-      let id = e.target.id;
-      this.box === 'body' ? this.removeItem(id) : this.pullItem(id, 1); // else box === 'bag'
-      this.dropItem(0);
+    dropItemInner(index) {
+      const vm = this;
+      const removeOrPullItem = vm.box === 'body' ? vm.removeItem : vm.pullItem;
+      removeOrPullItem({ index, amount: 1 }).then(vm.dropItem);
     },
   },
 };

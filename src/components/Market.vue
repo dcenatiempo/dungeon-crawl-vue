@@ -1,14 +1,14 @@
 <template>
   <div class="market modal-box">
     <h3>Market</h3>
-    <ModalLabelRow box="market" :is-market="true" />
-    <template v-for="(thing, i) in bag">
+    <ModalLabelRow box="market" is-market />
+    <template v-for="(thing, i) in currentMarket.bag">
       <ModalContentRow
         :key="i"
         :index="i"
         :item="thing"
         box="market"
-        is-market="true"
+        is-market
       />
     </template>
   </div>
@@ -27,7 +27,7 @@ export default {
   data: () => ({}),
   computed: {
     ...mapGetters('player', ['level']),
-    ...mapGetters('market', ['market']),
+    ...mapGetters('market', ['currentMarket']),
     ...mapGetters('app', ['displayMarket']),
     marketId() {
       return this.level / TOWN_EVERY;
@@ -46,5 +46,6 @@ export default {
 
 <style lang="scss">
 .market {
+  background: rgba(255, 255, 255, 0.5);
 }
 </style>

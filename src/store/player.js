@@ -1,4 +1,4 @@
-import { biggest, smallest, sleep } from '../lib/utils';
+import { biggest, smallest } from '../lib/utils';
 import { WEAPON_LIST } from '../lib/constants';
 
 // import { rarityTolerance } from './app';
@@ -81,6 +81,8 @@ const getters = {
   hand: state => state.hand,
   flash: state => state.flash,
   alerts: state => state.alerts,
+  gold: state => state.bag.find(item => item.type === 'gold')?.amount,
+  food: state => state.bag.find(item => item.type === 'food')?.amount,
   expLevel,
   maxHealth,
   hunger,
@@ -188,99 +190,115 @@ const actions = {
   },
   clearPlayerAlerts: ({ state, dispatch }) => {
     clearTimeout(timerVar);
-    sleep(100).then(() => dispatch('playerFlashOver'));
     timerVar = setInterval(() => {
       console.log(state.alerts);
+      dispatch('playerFlashOver');
       state.alerts.length === 0 ? clearTimeout(timerVar) : null;
     }, biggest(900 - state.alerts.length * 100, 200));
   },
-  pickUpItem: ({ commit, dispatch }, { item, id }) => {
+  // put item in hand
+  pickUpItem: ({ state, commit, dispatch }, { item, index }) => {
     // Take item from monster
-    dispatch('monsters/takeItemFromMonster', { item, id }, { root: true });
+    dispatch('monsters/takeItemFromMonster', { item, index }, { root: true });
     // And put in player's hand or mouth
-    commit('setHand', [item]);
+
+    const newHand = [...state.hand, item];
+    commit('setHand', newHand);
   },
-  storeItem: ({ state, commit }, index) => {
-    const currentItem = state.hand[index];
+  // put item from hand in bag
+  storeItem: ({ state, getters, commit }) => {
     let newBag = [];
-    if (currentItem.type === 'food' || currentItem.type === 'gold') {
-      //console.log("adding "+currentItem.type+" to bag")
-      newBag = [...state.bag].map(item =>
-        item.type === currentItem.type
+    let newHand = [...state.hand];
+    const item = newHand.shift();
+
+    if (item.type === 'food' || item.type === 'gold') {
+      //console.log("adding "+item.type+" to bag")
+      let capacity =
+        item.type === 'food'
+          ? getters.foodCarryCapacity
+          : getters.goldCarryCapacity;
+
+      let amount = Math.round(smallest(item.amount, capacity) * 100) / 100;
+
+      newBag = state.bag.map(bagItem =>
+        bagItem.type === item.type
           ? {
-              ...item,
-              amount: Math.round((item.amount + currentItem.amount) * 10) / 10,
+              ...bagItem,
+              amount: Math.round((bagItem.amount + amount) * 10) / 10,
             }
-          : item
+          : bagItem
       );
     } else {
-      newBag = [...state.bag];
-      newBag.push(currentItem);
+      newBag = [...state.bag, item];
     }
-    let newHand = [...state.hand];
-    newHand.splice(index, 1);
+
     commit('setBag', newBag);
     commit('setHand', newHand);
   },
-  armItem: ({ state, commit }, i) => {
-    const currentItem = state.hand[i];
-    let newHand = [...state.hand];
-    newHand.splice(i, 1);
-    if (currentItem.type === 'food') {
-      commit('setHealth', state.health + currentItem.amount);
+  // put item from hand to body
+  armItem: ({ state, commit }) => {
+    const newHand = [...state.hand];
+    const item = newHand.shift();
+
+    if (item.type === 'food') {
+      commit('setHealth', state.health + item.amount);
       commit('setHand', newHand);
       return;
     }
 
     let newBody = [...state.body];
-    let index = newBody.findIndex(i => i.type === currentItem.type);
+    let index = newBody.findIndex(i => i.type === item.type);
 
-    newBody.splice(index, index + 1 === 0 ? 0 : 1, currentItem);
+    newBody.splice(index, index + 1 === 0 ? 0 : 1, item);
     newBody.sort((a, b) => a.sort - b.sort);
 
     commit('setBody', newBody);
     commit('setHand', newHand);
     commit('setMovesRemain', state.movesRemain - 1);
   },
-  removeItem: ({ state, commit }, i) => {
-    const currentItem = state.body[i];
-    let newHand = [...state.hand];
-    newHand.push(currentItem);
+  // move item from body to hand
+  removeItem: ({ state, commit }, { index }) => {
+    const item = state.body[index];
+    const newHand = [...state.hand, item];
     const newBody = [...state.body];
-    if (currentItem.type === 'weapon') newBody.splice(i, 1, WEAPON_LIST[0]);
-    else newBody.splice(i, 1);
+
+    if (item.type === 'weapon') newBody.splice(index, 1, WEAPON_LIST[0]);
+    else newBody.splice(index, 1);
 
     commit('setBody', newBody);
-    commit('settHand', newHand);
+    commit('setHand', newHand);
   },
-  pullItem: ({ state, commit }, { i, amount }) => {
-    const handItem = { ...state.bag[i] };
-    if (handItem.amount) {
-      handItem.amount = amount;
+  // move item from bag to hand
+  pullItem: ({ state, commit }, { index, amount }) => {
+    const item = { ...state.bag[index] };
+    if (item.amount) {
+      item.amount = amount;
     }
-    let newHand = [...state.hand];
-    newHand.push(handItem);
+
+    const newHand = [...state.hand, item];
 
     let newBag;
-    if (handItem.type === 'food' || handItem.type === 'gold')
+    if (item.type === 'food' || item.type === 'gold')
       // if food/gold reduce amount of item
-      newBag = state.bag.map(item =>
-        item.type === handItem.type
-          ? { ...item, amount: item.amount - amount }
-          : item
+      newBag = state.bag.map(bagItem =>
+        bagItem.type === item.type
+          ? { ...bagItem, amount: bagItem.amount - amount }
+          : bagItem
       );
     else {
       // else remove item
       newBag = [...state.bag];
-      newBag.splice(i, 1);
+      newBag.splice(index, 1);
     }
     commit('setBag', newBag);
     commit('setHand', newHand);
   },
-  dropItem: ({ state, commit }, i) => {
+  // remove item from hand
+  dropItem: ({ state, commit }) => {
     let newHand = [...state.hand];
-    newHand.splice(i, 1);
+    const item = newHand.shift();
     commit('setHand', newHand);
+    return item;
   },
   pickUpItems: ({ getters, rootGetters, dispatch }, target) => {
     const monsters = rootGetters['monsters/currentMonsters'];
@@ -292,11 +310,11 @@ const actions = {
         monstIDs.push(i);
     });
     // pick up items (food, gold, weapons, gear)
-    monstIDs.forEach(id => {
-      let food = monsters[id].food;
-      let gold = monsters[id].gold;
-      let weapon = monsters[id].weapon;
-      let armor = monsters[id].armor;
+    monstIDs.forEach(index => {
+      let food = monsters[index].food;
+      let gold = monsters[index].gold;
+      let weapon = monsters[index].weapon;
+      let armor = monsters[index].armor;
       // auto pick up food
       if (food > 0) {
         let belly = getters.hunger;
@@ -308,9 +326,9 @@ const actions = {
           //console.log("eating "+smallest(foodInHand, belly)+" food")
           dispatch('pickUpItem', {
             item: { type: 'food', amount: smallest(foodInHand, belly) },
-            id,
+            index,
           });
-          dispatch('armItem', 0);
+          dispatch('armItem');
           foodInHand -= smallest(foodInHand, belly);
         }
         if (foodInHand > 0) {
@@ -318,9 +336,9 @@ const actions = {
           //console.log("storing "+foodInHand+" food in bag")
           dispatch('pickUpItem', {
             item: { type: 'food', amount: foodInHand },
-            id,
+            index,
           });
-          dispatch('storeItem', 0);
+          dispatch('storeItem');
         }
       }
       // auto pick up gold
@@ -332,9 +350,9 @@ const actions = {
           dispatch('addPlayerAlert', `+${goldInHand} gold`);
           dispatch('pickUpItem', {
             item: { type: 'gold', amount: goldInHand },
-            id,
+            index,
           });
-          dispatch('storeItem', 0);
+          dispatch('storeItem');
         }
       }
       // auto pick up weapon
@@ -345,13 +363,13 @@ const actions = {
         if (getters.body.filter(i => i.type === 'weapon')[0].name === 'fist') {
           // console.log("pick up and arm "+ weapon.name);
           dispatch('addPlayerAlert', '+ new weapon');
-          dispatch('pickUpItem', { item: weapon, id });
-          dispatch('armItem', 0);
+          dispatch('pickUpItem', { item: weapon, index });
+          dispatch('armItem');
         } else if (getters.carryCapacity - getters.carryAmount >= weapon.size) {
           // console.log("pick up and store "+ weapon.name);
           dispatch('addPlayerAlert', '+ new weapon');
-          dispatch('pickUpItem', { item: weapon, id });
-          dispatch('storeItem', 0);
+          dispatch('pickUpItem', { item: weapon, index });
+          dispatch('storeItem');
         }
       }
       // auto pick up armor
@@ -359,13 +377,13 @@ const actions = {
         if (getters.body.find(i => i.type == [armor.type]) === undefined) {
           // console.log(`pick up and arm ${armor.material} ${armor.name}`);
           dispatch('addPlayerAlert', `+ new ${armor.material} armor`);
-          dispatch('pickUpItem', { item: armor, id });
-          dispatch('armItem', 0);
+          dispatch('pickUpItem', { item: armor, index });
+          dispatch('armItem');
         } else if (getters.carryCapacity - getters.carryAmount >= armor.size) {
           // console.log("pick up and store "+ armor.material+" "+armor.name);
           dispatch('addPlayerAlert', `+ new ${armor.material} armor`);
-          dispatch('pickUpItem', { item: armor, id });
-          dispatch('storeItem', 0);
+          dispatch('pickUpItem', { item: armor, index });
+          dispatch('storeItem');
         }
       }
     });

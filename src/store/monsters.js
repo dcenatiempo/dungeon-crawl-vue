@@ -21,9 +21,7 @@ const state = () => ({
 const getters = {
   monsters: state => state.monsters,
   currentMonsters: state => state.monsters[state.playerLevel] || [],
-  isAnyMonster,
-  isAliveMonster,
-  isDeadMonster,
+  isMonster,
 };
 
 const mutations = {
@@ -79,59 +77,43 @@ function createMonster({ rootGetters }, { monster, coords }) {
  *
  *******************************************************************************/
 
-function isAnyMonster(state) {
+function isMonster(state) {
   return target => {
-    let mIndex = false;
     const currentMonsters = getters.currentMonsters(state);
-    if (!currentMonsters?.length) return mIndex;
 
-    currentMonsters.forEach((monster, index) => {
-      if (target[0] == monster.locale[0] && target[1] == monster.locale[1]) {
-        mIndex = index;
+    function formatMonster(m, i) {
+      return {
+        index: i,
+        isAlive: m.health > 0,
+        hasFlash: m.flash,
+        hasGear:
+          m.food > 0 ||
+          m.gold > 0 ||
+          (m.weapon.name != 'fist' &&
+            m.armor.rarity >= getters.rarityTolerance) ||
+          (m.armor.name != 'no armor' &&
+            m.armor.rarity >= getters.rarityTolerance),
+      };
+    }
+
+    let monster = null;
+    // we have x/y coords
+    if (Array.isArray(target)) {
+      if (!currentMonsters?.length) return monster;
+
+      for (let i = 0; i < currentMonsters.length; i++) {
+        const m = currentMonsters[i];
+        if (target[0] !== m.locale[0] || target[1] !== m.locale[1]) continue;
+        monster = formatMonster(m, i);
+        i = currentMonsters.length;
       }
-    });
-    return mIndex;
-  };
-}
+    } else {
+      const m = currentMonsters?.[target];
+      monster = m ? formatMonster(m, target) : null;
+    }
 
-function isAliveMonster(state) {
-  return target => {
-    let mIndex = false;
-    const currentMonsters = getters.currentMonsters(state);
-    if (!currentMonsters?.length) return mIndex;
-
-    currentMonsters.forEach((monster, index) => {
-      if (target[0] == monster.locale[0] && target[1] == monster.locale[1]) {
-        if (monster.health > 0) {
-          mIndex = index;
-        }
-      }
-    });
-    return mIndex;
-  };
-}
-
-function isDeadMonster(state) {
-  return target => {
-    let mIndex = false;
-    const currentMonsters = getters.currentMonsters(state);
-    if (!currentMonsters?.length) return mIndex;
-
-    currentMonsters.forEach((monster, index) => {
-      if (target[0] == monster.locale[0] && target[1] == monster.locale[1]) {
-        if (
-          monster.health <= 0 &&
-          (monster.food > 0 ||
-            monster.gold > 0 ||
-            (monster.weapon.name != 'fist' &&
-              monster.armor.rarity >= getters.rarityTolerance) ||
-            (monster.armor.name != 'no armor' &&
-              monster.armor.rarity >= getters.rarityTolerance))
-        )
-          mIndex = index;
-      }
-    });
-    return mIndex;
+    // return an abbreviated monster object or null
+    return monster;
   };
 }
 
@@ -221,13 +203,13 @@ function monsterLoseHealth({ state, commit }, { id, damage }) {
   commit('setMonsters', newMonsters);
 }
 
-function takeItemFromMonster({ state, commit }, { item, id }) {
-  if (id === null) return;
+function takeItemFromMonster({ state, commit }, { item, index }) {
+  if (index === null || index === undefined) return;
 
   // locate monster
   const level = state.playerLevel;
   let newMonsters = JSON.parse(JSON.stringify(state.monsters));
-  let newMonster = newMonsters[level][id];
+  let newMonster = newMonsters[level][index];
 
   // take food/gold from monster
   if (item.type === 'food' || item.type === 'gold')
@@ -240,11 +222,11 @@ function takeItemFromMonster({ state, commit }, { item, id }) {
   commit('setMonsters', newMonsters);
 }
 
-function monsterFlashOver({ state, commit }, id) {
+function monsterFlashOver({ state, commit }, index) {
   // locate monster
   const level = state.playerLevel;
   let newMonsters = JSON.parse(JSON.stringify(state.monsters));
-  let newMonster = newMonsters[level][id];
+  let newMonster = newMonsters[level][index];
 
   // turn off flash
   newMonster.flash = false;
@@ -252,10 +234,10 @@ function monsterFlashOver({ state, commit }, id) {
   commit('setMonsters', newMonsters);
 }
 
-function resetMoves({ state, commit, rootGetters }, id) {
+function resetMoves({ state, commit, rootGetters }, index) {
   const level = state.playerLevel;
   let newMonsters = JSON.parse(JSON.stringify(state.monsters));
-  const monster = newMonsters[level][id];
+  const monster = newMonsters[level][index];
   monster.movesRemain = rootGetters.getMaxMoves(monster);
   commit('setMonsters', newMonsters);
 }
@@ -297,9 +279,10 @@ async function monsterTurn({ dispatch, getters, rootGetters }, mi) {
 
     // make best move
     for (let t = 0; t < 3; t++) {
+      const m = getters.isMonster(target[t]);
       if (
         currentWorld[target[t][0]][target[t][1]].type === 'floor' &&
-        !getters.isAliveMonster(target[t]) &&
+        !m?.isAlive &&
         !rootGetters['player/isPlayer'](target[t])
       ) {
         mL[0] = target[t][0];
