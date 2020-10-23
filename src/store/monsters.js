@@ -195,16 +195,18 @@ async function populateLevel(
   commit('setMonsters', newMonsters);
 }
 
-function monsterLoseHealth({ state, commit }, { id, damage }) {
+function monsterLoseHealth({ state, commit, dispatch }, { index, damage }) {
   // locate monster
   const level = state.playerLevel;
   let newMonsters = JSON.parse(JSON.stringify(state.monsters));
-  let newMonster = newMonsters[level][id];
+  let newMonster = newMonsters[level][index];
 
   // decrease monster health
   newMonster.health -= damage;
   // turn on flash
   newMonster.flash = true;
+
+  sleep(100).then(() => dispatch('monsterFlashOver', index));
 
   commit('setMonsters', newMonsters);
 }

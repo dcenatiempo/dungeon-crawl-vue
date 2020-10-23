@@ -261,14 +261,15 @@ export default {
         if (this.attacksRemain >= 1) {
           this.useAttack();
           //console.log("Attack "+currentMonsters[m].type+"!");
-          let damage = this.battle({ index: mi, attacker: false });
-          this.monsterLoseHealth({ id: mi, damage });
-          const monsterKilled = !this.isMonster(mi)?.isAlive;
-          if (monsterKilled) {
-            //console.log("earn experience "+getExpFromMonst(currentMonsters[m]))
-            //this.props.addPlayerAlert(("+"+getExpFromMonst(currentMonsters[m])+" experience"))
-            this.gainExperience(this.getExpFromMonst(currentMonsters[mi]));
-          }
+          this.battle({ index: mi, attacker: false }).then(damage => {
+            vm.monsterLoseHealth({ index: mi, damage });
+            const monsterKilled = !vm.isMonster(mi)?.isAlive;
+            if (monsterKilled) {
+              //console.log("earn experience "+getExpFromMonst(currentMonsters[m]))
+              //vm.props.addPlayerAlert(("+"+getExpFromMonst(currentMonsters[m])+" experience"))
+              vm.gainExperience(vm.getExpFromMonst(currentMonsters[mi]));
+            }
+          });
         } else this.movePlayerAction(currCell); //no more attacks: 'move' player to square already on
       }
 

@@ -7,7 +7,7 @@ import world from './world.js';
 import market from './market.js';
 import monsters from './monsters.js';
 
-import { getRand, smallest, biggest, sleep } from '../lib/utils';
+import { getRand, smallest, biggest } from '../lib/utils';
 // import { WEAPON_LIST, MATERIAL_LIST, GEAR_LIST } from '../lib/constants';
 
 Vue.use(Vuex);
@@ -243,12 +243,6 @@ function battle({ dispatch, getters }, { index, attacker }) {
     ? 'Missed!'
     : `+${damage} attack!`;
   dispatch('player/addPlayerAlert', message, { root: true });
-
-  if (attacker) {
-    sleep(300).then(() =>
-      dispatch('monsters/monsterFlashOver', index, { root: true })
-    );
-  }
 
   return damage;
 }
