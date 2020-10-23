@@ -98,6 +98,8 @@ $slider-height: 5px;
 $header-height: 50px;
 
 .header {
+  position: fixed;
+  top: 0;
   display: flex;
   background: black;
   color: lightgray;

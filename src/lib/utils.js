@@ -24,7 +24,7 @@ function sleep(time) {
 
 function add(a, b) {
   // add two coordinates
-  return [a[0] + b[0], a[1] + b[1]];
+  return { row: a.row + b.row, col: a.col + b.col };
 }
 
 function smallest(a, b) {

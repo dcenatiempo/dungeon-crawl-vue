@@ -43,7 +43,7 @@ const actions = {
     newMarket[marketId].gold -= gold;
 
     commit('setMarket', newMarket);
-    debugger;
+
     return { type: 'gold', amount: gold };
   },
   buyFromMarket({ state, commit }, { gold, index }) {

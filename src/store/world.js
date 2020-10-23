@@ -52,69 +52,74 @@ const actions = {
     const shadows = SHADOW_LIST;
 
     // takes relative coordinates and converts to absolute coordinates then changes to visible
-    function makeFog(rR, cR, q) {
+    function makeFog({ relativeRow, relativeCol }, q) {
       //find matching shaddows
       for (let i = 0; i < shadows.length; i++) {
-        if (shadows[i].start[0] === rR && shadows[i].start[1] === cR) {
+        if (
+          shadows[i].start.row === relativeRow &&
+          shadows[i].start.col === relativeCol
+        ) {
           for (let j = 0; j < shadows[i].full.length; j++) {
             let rShadAbs, cShadAbs;
+            const shadow = shadows[i].full[j];
             if (q === 1) {
-              rShadAbs = shadows[i].full[j][0] + target[0];
-              cShadAbs = shadows[i].full[j][1] + target[1];
+              rShadAbs = shadow.row + target.row;
+              cShadAbs = shadow.col + target.col;
             } else if (q === 2) {
-              rShadAbs = shadows[i].full[j][1] + target[0];
-              cShadAbs = -shadows[i].full[j][0] + target[1];
+              rShadAbs = shadow.col + target.row;
+              cShadAbs = -shadow.row + target.col;
             } else if (q === 3) {
-              rShadAbs = -shadows[i].full[j][0] + target[0];
-              cShadAbs = -shadows[i].full[j][1] + target[1];
+              rShadAbs = -shadow.row + target.row;
+              cShadAbs = -shadow.col + target.col;
             } else if (q === 4) {
-              rShadAbs = -shadows[i].full[j][1] + target[0];
-              cShadAbs = shadows[i].full[j][0] + target[1];
+              rShadAbs = -shadow.col + target.row;
+              cShadAbs = shadow.row + target.col;
             } else if (q === 5) {
-              rShadAbs = shadows[i].full[j][1] + target[0];
-              cShadAbs = shadows[i].full[j][0] + target[1];
+              rShadAbs = shadow.col + target.row;
+              cShadAbs = shadow.row + target.col;
             } else if (q === 6) {
-              rShadAbs = shadows[i].full[j][0] + target[0];
-              cShadAbs = -shadows[i].full[j][1] + target[1];
+              rShadAbs = shadow.row + target.row;
+              cShadAbs = -shadow.col + target.col;
             } else if (q === 7) {
-              rShadAbs = -shadows[i].full[j][1] + target[0];
-              cShadAbs = -shadows[i].full[j][0] + target[1];
+              rShadAbs = -shadow.col + target.row;
+              cShadAbs = -shadow.row + target.col;
             } else if (q === 8) {
-              rShadAbs = -shadows[i].full[j][0] + target[0];
-              cShadAbs = shadows[i].full[j][1] + target[1];
+              rShadAbs = -shadow.row + target.row;
+              cShadAbs = shadow.col + target.col;
             }
-            if (getters.isInBounds([rShadAbs, cShadAbs])) {
+            if (getters.isInBounds({ row: rShadAbs, col: cShadAbs })) {
               dungeon[rShadAbs][cShadAbs].fog += 1;
             }
           }
           for (let j = 0; j < shadows[i].half.length; j++) {
             let rShadAbs, cShadAbs;
+            const shadow = shadows[i].half[j];
             if (q === 1) {
-              rShadAbs = shadows[i].half[j][0] + target[0];
-              cShadAbs = shadows[i].half[j][1] + target[1];
+              rShadAbs = shadow.row + target.row;
+              cShadAbs = shadow.col + target.col;
             } else if (q === 2) {
-              rShadAbs = shadows[i].half[j][1] + target[0];
-              cShadAbs = -shadows[i].half[j][0] + target[1];
+              rShadAbs = shadow.col + target.row;
+              cShadAbs = -shadow.row + target.col;
             } else if (q === 3) {
-              rShadAbs = -shadows[i].half[j][0] + target[0];
-              cShadAbs = -shadows[i].half[j][1] + target[1];
+              rShadAbs = -shadow.row + target.row;
+              cShadAbs = -shadow.col + target.col;
             } else if (q === 4) {
-              rShadAbs = -shadows[i].half[j][1] + target[0];
-              cShadAbs = shadows[i].half[j][0] + target[1];
+              rShadAbs = -shadow.col + target.row;
+              cShadAbs = shadow.row + target.col;
             } else if (q === 5) {
-              rShadAbs = shadows[i].half[j][1] + target[0];
-              cShadAbs = shadows[i].half[j][0] + target[1];
+              rShadAbs = shadow.col + target.row;
+              cShadAbs = shadow.row + target.col;
             } else if (q === 6) {
-              rShadAbs = shadows[i].half[j][0] + target[0];
-              cShadAbs = -shadows[i].half[j][1] + target[1];
+              rShadAbs = shadow.row + target.row;
+              cShadAbs = -shadow.col + target.col;
             } else if (q === 7) {
-              rShadAbs = -shadows[i].half[j][1] + target[0];
-              cShadAbs = -shadows[i].half[j][0] + target[1];
+              rShadAbs = -shadow.col + target.row;
+              cShadAbs = -shadow.row + target.col;
             } else if (q === 8) {
-              rShadAbs = -shadows[i].half[j][0] + target[0];
-              cShadAbs = shadows[i].half[j][1] + target[1];
+              rShadAbs = -shadow.row + target.row;
+              cShadAbs = shadow.col + target.col;
             }
-            if (getters.isInBounds([rShadAbs, cShadAbs])) {
+            if (getters.isInBounds({ row: rShadAbs, col: cShadAbs })) {
               dungeon[rShadAbs][cShadAbs].fog += 0.5;
             }
           }
@@ -123,11 +128,11 @@ const actions = {
     }
 
     function writeToMap() {
-      let rRel = coords[0];
-      let cRel = coords[1];
-      let rAbs = rRel + target[0];
-      let cAbs = cRel + target[1];
-      if (getters.isInBounds([rAbs, cAbs])) {
+      let rRel = coords.row;
+      let cRel = coords.col;
+      let rAbs = rRel + target.row;
+      let cAbs = cRel + target.col;
+      if (getters.isInBounds({ row: rAbs, col: cAbs })) {
         if (dungeon[rAbs][cAbs].type === 'wall') {
           // mark shadows
           if (
@@ -137,7 +142,7 @@ const actions = {
             cRel <= 4 &&
             Math.abs(cRel) >= Math.abs(rRel)
           ) {
-            makeFog(rRel, cRel, 1); //  r, c
+            makeFog({ relativeRow: rRel, relativeCol: cRel }, 1); //  r, c
           } else if (
             rRel >= 1 &&
             rRel <= 4 &&
@@ -145,7 +150,7 @@ const actions = {
             cRel >= -3 &&
             Math.abs(cRel) <= Math.abs(rRel)
           ) {
-            makeFog(-cRel, rRel, 2); //  c,-r
+            makeFog({ relativeRow: -cRel, relativeCol: rRel }, 2); //  c,-r
           } else if (
             rRel <= 0 &&
             rRel >= -3 &&
@@ -153,7 +158,7 @@ const actions = {
             cRel >= -4 &&
             Math.abs(cRel) >= Math.abs(rRel)
           ) {
-            makeFog(-rRel, -cRel, 3); // -r,-c
+            makeFog({ relativeRow: -rRel, relativeCol: -cRel }, 3); // -r,-c
           } else if (
             rRel <= -1 &&
             rRel >= -4 &&
@@ -161,7 +166,7 @@ const actions = {
             cRel <= 3 &&
             Math.abs(cRel) <= Math.abs(rRel)
           ) {
-            makeFog(cRel, -rRel, 4); // -c, r
+            makeFog({ relativeRow: cRel, relativeCol: -rRel }, 4); // -c, r
           } else if (
             rRel >= 2 &&
             rRel <= 4 &&
@@ -169,7 +174,7 @@ const actions = {
             cRel <= 3 &&
             Math.abs(cRel) < Math.abs(rRel)
           ) {
-            makeFog(cRel, rRel, 5); //  c, r
+            makeFog({ relativeRow: cRel, relativeCol: rRel }, 5); //  c, r
           } else if (
             rRel >= 1 &&
             rRel <= 3 &&
@@ -177,7 +182,7 @@ const actions = {
             cRel >= -4 &&
             Math.abs(cRel) > Math.abs(rRel)
           ) {
-            makeFog(rRel, -cRel, 6); //  r,-c
+            makeFog({ relativeRow: rRel, relativeCol: -cRel }, 6); //  r,-c
           } else if (
             rRel <= 2 &&
             rRel >= -4 &&
@@ -185,7 +190,7 @@ const actions = {
             cRel >= -3 &&
             Math.abs(cRel) < Math.abs(rRel)
           ) {
-            makeFog(-cRel, -rRel, 7); // -c,-r
+            makeFog({ relativeRow: -cRel, relativeCol: -rRel }, 7); // -c,-r
           } else if (
             rRel <= 1 &&
             rRel >= -3 &&
@@ -193,7 +198,7 @@ const actions = {
             cRel <= 4 &&
             Math.abs(cRel) > Math.abs(rRel)
           ) {
-            makeFog(-rRel, cRel, 8); // -r, c
+            makeFog({ relativeRow: -rRel, relativeCol: cRel }, 8); // -r, c
           }
         }
         if (dungeon[rAbs][cAbs].fog < 2) {
@@ -202,59 +207,60 @@ const actions = {
         }
       }
     }
+
     // reset fog
     for (let i = -(shadowSize + 1); i <= shadowSize + 1; i++) {
       for (let j = -(shadowSize + 1); j <= shadowSize + 1; j++) {
-        const x = target[0] + i;
-        const y = target[1] + j;
-        if (getters.isInBounds([x, y])) {
-          dungeon[x][y].fog = 1;
+        const row = target.row + i;
+        const col = target.col + j;
+        if (getters.isInBounds({ row, col })) {
+          dungeon[row][col].fog = 1;
         }
       }
     }
 
     // loops once per shadow radius, starting with inner-most radius, ending with outer-most radius
     for (let i = 1; i <= shadowSize; i++) {
-      coords = [-i, -i];
+      coords = { row: -i, col: -i };
       for (let j = 0; j < i * 2; j++) {
         // top side
-        coords[1]++;
+        coords.col++;
         if (
-          Math.abs(coords[0]) + Math.abs(coords[1]) <=
+          Math.abs(coords.row) + Math.abs(coords.col) <=
           shadowSize * 2 - Math.floor(shadowSize / 2)
         )
           writeToMap();
       }
       for (let j = 0; j < i * 2; j++) {
         // right side
-        coords[0]++;
+        coords.row++;
         if (
-          Math.abs(coords[0]) + Math.abs(coords[1]) <=
+          Math.abs(coords.row) + Math.abs(coords.col) <=
           shadowSize * 2 - Math.floor(shadowSize / 2)
         )
           writeToMap();
       }
       for (let j = 0; j < i * 2; j++) {
         // bottom side
-        coords[1]--;
+        coords.col--;
         if (
-          Math.abs(coords[0]) + Math.abs(coords[1]) <=
+          Math.abs(coords.row) + Math.abs(coords.col) <=
           shadowSize * 2 - Math.floor(shadowSize / 2)
         )
           writeToMap();
       }
       for (let j = 0; j < i * 2; j++) {
         // left side
-        coords[0]--;
+        coords.row--;
         if (
-          Math.abs(coords[0]) + Math.abs(coords[1]) <=
+          Math.abs(coords.row) + Math.abs(coords.col) <=
           shadowSize * 2 - Math.floor(shadowSize / 2)
         )
           writeToMap();
       }
     }
-    dungeon[target[0]][target[1]].vis = true; // make players location (0,0) visible
-    dungeon[target[0]][target[1]].fog = 0; // make players location (0,0) un-foggy
+    dungeon[target.row][target.col].vis = true; // make players location (0,0) visible
+    dungeon[target.row][target.col].fog = 0; // make players location (0,0) un-foggy
   },
 };
 
@@ -301,13 +307,16 @@ function createDungeonLevel(toLevel) {
   let maxRooms = 20;
   let numRooms = 0;
   let exits = 0;
-  function placeExit(y, x) {
-    newLevel[y > rows - 2 ? rows - 2 : y][x > cols - 2 ? cols - 2 : x].type =
-      'gate';
-    newLevel[y > rows - 2 ? rows - 2 : y][x > cols - 2 ? cols - 2 : x].toLevel =
-      exits === 0 ? toLevel - 1 : toLevel + 1;
+
+  function placeExit(r, c) {
+    const row = r > rows - 2 ? rows - 2 : r;
+    const col = c > cols - 2 ? cols - 2 : c;
+    const newToLevel = exits === 0 ? toLevel - 1 : toLevel + 1;
+    newLevel[row][col].type = 'gate';
+    newLevel[row][col].toLevel = newToLevel;
     exits++;
   }
+
   // create blank canvas (all walls)
   for (let r = 0; r < rows; r++) {
     newLevel.push([]);
@@ -328,18 +337,15 @@ function createDungeonLevel(toLevel) {
           let width = getRand(minRoomSize, maxRoomSize);
           for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
-              if (getRand(0, 10))
-                if (
-                  newLevel[r + y > rows - 2 ? rows - 2 : r + y][
-                    c + x > cols - 2 ? cols - 2 : c + x
-                  ].type !== 'gate'
-                ) {
-                  newLevel[r + y > rows - 2 ? rows - 2 : r + y][
-                    c + x > cols - 2 ? cols - 2 : c + x
-                  ].type = 'floor';
+              if (getRand(0, 10)) {
+                const row = r + y > rows - 2 ? rows - 2 : r + y;
+                const col = c + x > cols - 2 ? cols - 2 : c + x;
+                if (newLevel[row][col].type !== 'gate') {
+                  newLevel[row][col].type = 'floor';
                   if (getRand(0, 600) === 0 && exits < 2)
                     placeExit(r + y, c + x);
                 }
+              }
             }
           }
           numRooms++;
@@ -395,7 +401,10 @@ function isInBounds(state) {
     const rows = currentWorld.length;
     const cols = currentWorld[0].length;
     return (
-      target[0] >= 0 && target[1] >= 0 && target[0] < rows && target[1] < cols
+      target.row >= 0 &&
+      target.col >= 0 &&
+      target.row < rows &&
+      target.col < cols
     );
   };
 }

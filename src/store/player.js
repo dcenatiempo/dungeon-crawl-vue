@@ -9,7 +9,7 @@ const defaultState = {
   type: 'player',
   name: 'Devin',
   level: 0, // current dungeon level location :town
-  locale: [2, 8], // row/column coordinates
+  locale: { col: 8, row: 2 }, // row/column coordinates
   strength: 5, // Attack, Health
   speed: 5, // MaxMoves, Dodge, MaxAttacks
   tenacity: 5, // Health, MaxMoves
@@ -317,7 +317,7 @@ const actions = {
     // find all monsters on square
     const monstIDs = [];
     monsters.forEach((m, i) => {
-      if (m.locale[0] == target[0] && m.locale[1] == target[1])
+      if (m.locale.col == target.col && m.locale.row == target.row)
         monstIDs.push(i);
     });
     // pick up items (food, gold, weapons, gear)
@@ -491,7 +491,7 @@ function foodCarryCapacity(state) {
 // given location target (row,col) returns true if player is on that location, false if not
 function isPlayer(state) {
   return target => {
-    if (target[0] == state.locale[0] && target[1] == state.locale[1])
+    if (target.col == state.locale.col && target.row == state.locale.row)
       return true;
     else return false;
   };

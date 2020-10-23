@@ -10,7 +10,7 @@ import {
 
 // createMonster({
 //   monster: MONSTER_LIST[0][getRand(0, MONSTER_LIST[0].length - 1)],
-//   coords: [8, 8],
+//   coords: { row: 8, col: 8 }],
 // }),
 
 const state = () => ({
@@ -97,17 +97,23 @@ function isMonster(state) {
     }
 
     let monster = null;
-    // we have x/y coords
-    if (Array.isArray(target)) {
+    // we have row/col coords
+    if (typeof target === 'object') {
       if (!currentMonsters?.length) return monster;
 
       for (let i = 0; i < currentMonsters.length; i++) {
         const m = currentMonsters[i];
-        if (target[0] !== m.locale[0] || target[1] !== m.locale[1]) continue;
+
+        if (target.row !== m.locale.row || target.col !== m.locale.col)
+          continue;
+
         monster = formatMonster(m, i);
+        // console.log(monster);
         i = currentMonsters.length;
       }
-    } else {
+    }
+    // we have a monster index
+    else {
       const m = currentMonsters?.[target];
       monster = m ? formatMonster(m, target) : null;
     }
@@ -141,7 +147,7 @@ async function populateLevel(
       ) {
         const newMonster = await dispatch('createMonster', {
           monster: MONSTER_LIST[3][getRand(0, MONSTER_LIST[3].length - 1)],
-          coords: [r, c],
+          coords: { row: r, col: c },
         });
         monsterLevelList.push(newMonster);
       }
@@ -175,7 +181,7 @@ async function populateLevel(
           const newMonster = await dispatch('createMonster', {
             monster:
               MONSTER_LIST[rarity][getRand(0, MONSTER_LIST[rarity].length - 1)],
-            coords: [r, c],
+            coords: { row: r, col: c },
           });
 
           monsterLevelList.push(newMonster);
@@ -253,10 +259,10 @@ async function monsterTurn({ dispatch, getters, rootGetters }, mi) {
   let attacks = m.attacksRemain;
   let target = [];
   function deltaL(a, b) {
-    return [a[0] - b[0], a[1] - b[1]];
+    return { row: a.row - b.row, col: a.col - b.col };
   }
   function isByPlayer(a, b) {
-    return Math.abs(deltaL(a, b)[0]) <= 1 && Math.abs(deltaL(a, b)[1]) <= 1;
+    return Math.abs(deltaL(a, b).row) <= 1 && Math.abs(deltaL(a, b).col) <= 1;
   }
   // max out monster moves
   function moveRecursive() {
@@ -266,13 +272,15 @@ async function monsterTurn({ dispatch, getters, rootGetters }, mi) {
     for (let r = -1; r < 2; r++) {
       for (let c = -1; c < 2; c++) {
         if (r === 0 && c === 0) continue;
-        target.push(deltaL(add(mL, [r, c]), pL));
+        target.push(deltaL(add(mL, { row: r, col: c }), pL));
       }
     }
     target = target
       .sort(
         (a, b) =>
-          Math.abs(a[0]) + Math.abs(a[1]) - (Math.abs(b[0]) + Math.abs(b[1]))
+          Math.abs(a.row) +
+          Math.abs(a.col) -
+          (Math.abs(b.row) + Math.abs(b.col))
       )
       .slice(0, 3)
       .map(item => add(item, pL));
@@ -281,12 +289,12 @@ async function monsterTurn({ dispatch, getters, rootGetters }, mi) {
     for (let t = 0; t < 3; t++) {
       const m = getters.isMonster(target[t]);
       if (
-        currentWorld[target[t][0]][target[t][1]].type === 'floor' &&
+        currentWorld[target[t].row][target[t].col].type === 'floor' &&
         !m?.isAlive &&
         !rootGetters['player/isPlayer'](target[t])
       ) {
-        mL[0] = target[t][0];
-        mL[1] = target[t][1];
+        mL.row = target[t].row;
+        mL.col = target[t].col;
         t = 3;
       }
     }

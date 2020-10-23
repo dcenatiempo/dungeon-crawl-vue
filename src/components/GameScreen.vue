@@ -76,7 +76,7 @@ export default {
       currentMonsters
         .reduce((mList, m, i) => {
           if (
-            currentWorld[m.locale[0]][m.locale[1]].fog === 0 &&
+            currentWorld[m.locale.row][m.locale.col].fog === 0 &&
             m.health > 0
           ) {
             countMonst++;
@@ -140,11 +140,11 @@ export default {
               // console.log('found a gate!!! at ' + r + ',' + c);
 
               if (nextLevel[r][c].toLevel === fromLevel) {
-                coords = [r, c];
+                coords = { row: r, col: c };
                 // reset c and r to exit loop
                 c = nextLevel[1].length;
                 r = nextLevel.length;
-                //console.log("placing player at gate at "+coords[0]+" "+coords[1])
+                //console.log("placing player at gate at "+coords.row+" "+coords.col)
               }
             }
           }
@@ -162,38 +162,38 @@ export default {
       let dir; // [row direction, col direction]
       switch (kp) {
         case 55: // 7
-          dir = [-1, -1];
+          dir = { row: -1, col: -1 };
           break;
         case 38: // up arrow
         case 56: // 8
-          dir = [-1, 0];
+          dir = { row: -1, col: 0 };
           break;
         case 57: // 9
-          dir = [-1, 1];
+          dir = { row: -1, col: 1 };
           break;
         case 37: // left arrow
         case 52: // 4
-          dir = [0, -1];
+          dir = { row: 0, col: -1 };
           break;
         case 39: // right arrow
         case 54: // 6
-          dir = [0, 1];
+          dir = { row: 0, col: 1 };
           break;
         case 49: // 1
-          dir = [1, -1];
+          dir = { row: 1, col: -1 };
           break;
         case 40: // down arrow
         case 50: // 2
-          dir = [1, 0];
+          dir = { row: 1, col: 0 };
           break;
         case 51: // 3
-          dir = [1, 1];
+          dir = { row: 1, col: 1 };
           break;
         // REST/SKIP MOVE
         case 32: // space
         case 82: // R
         case 53: // 5
-          dir = [0, 0];
+          dir = { row: 0, col: 0 };
           break;
         default:
           dir = undefined;
@@ -201,7 +201,7 @@ export default {
       if (!dir) return;
 
       // targetCell is potential future location of player
-      tarCell = [currCell[0] + dir[0], currCell[1] + dir[1]];
+      tarCell = { row: currCell.row + dir.row, col: currCell.col + dir.col };
 
       // does player have any moves left???
       if (this.movesRemain === 0) {
@@ -210,8 +210,8 @@ export default {
       }
 
       // if leaving market...
-      if (currentWorld[currCell[0]][currCell[1]].type === 'market') {
-        if (currentWorld[tarCell[0]][tarCell[1]].type !== 'market')
+      if (currentWorld[currCell.row][currCell.col].type === 'market') {
+        if (currentWorld[tarCell.row][tarCell.col].type !== 'market')
           this.setDisplayMarket(false);
         if (this.displaySetByMarket) this.setDisplayGear(false);
       }
@@ -219,14 +219,14 @@ export default {
       const monster = this.isMonster(tarCell);
 
       // if targetCell is a wall...
-      if (currentWorld[tarCell[0]][tarCell[1]].type === 'wall') {
+      if (currentWorld[tarCell.row][tarCell.col].type === 'wall') {
         //console.log("you can't walk through walls!");
       }
 
       // if targetCell is a gate...
-      else if (currentWorld[tarCell[0]][tarCell[1]].type === 'gate') {
+      else if (currentWorld[tarCell.row][tarCell.col].type === 'gate') {
         let fromLevel = this.level;
-        let toLevel = currentWorld[tarCell[0]][tarCell[1]].toLevel;
+        let toLevel = currentWorld[tarCell.row][tarCell.col].toLevel;
         this.movePlayerAction(tarCell); // move player onto gate
         this.changeLevel(toLevel); // change players level/location
         if (toLevel >= this.levels) {
@@ -240,7 +240,7 @@ export default {
       }
 
       // if targetCell is a market...
-      else if (currentWorld[tarCell[0]][tarCell[1]].type === 'market') {
+      else if (currentWorld[tarCell.row][tarCell.col].type === 'market') {
         // console.log('lets barter!');
         this.movePlayerAction(tarCell);
         if (!this.displayMarket) {
@@ -280,7 +280,7 @@ export default {
       }
 
       // if targetCell is open ground...
-      else if (currentWorld[tarCell[0]][tarCell[1]].type === 'floor') {
+      else if (currentWorld[tarCell.row][tarCell.col].type === 'floor') {
         this.movePlayerAction(tarCell);
       }
     },
