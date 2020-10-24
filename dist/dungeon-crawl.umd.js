@@ -9821,7 +9821,6 @@ function isPlayer(state) {
 
 
 
-
 var world_state = function state() {
   return {
     world: [createTownLevel(0)],
@@ -9881,8 +9880,7 @@ var world_actions = {
     if (level % TOWN_EVERY <= 0) return;
     var shadowSize = 5; //1-5
 
-    var dungeon = _toConsumableArray(state.world[level]);
-
+    var dungeon = JSON.parse(JSON.stringify(state.world[level]));
     var coords;
     var shadows = SHADOW_LIST; // takes relative coordinates and converts to absolute coordinates then changes to visible
 

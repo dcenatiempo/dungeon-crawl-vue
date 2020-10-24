@@ -48,7 +48,7 @@ const actions = {
 
     let shadowSize = 5; //1-5
 
-    let dungeon = [...state.world[level]];
+    let dungeon = JSON.parse(JSON.stringify(state.world[level]));
 
     let coords;
 
