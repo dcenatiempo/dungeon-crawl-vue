@@ -300,6 +300,10 @@ export default {
 $header-height: 50px;
 
 .game-screen {
+  height: 100vh;
+  display: flex;
+  flex-flow: column nowrap;
+
   .left-sidebar-grid {
     z-index: 10;
     position: fixed;
@@ -324,12 +328,6 @@ $header-height: 50px;
     bottom: 0;
     left: 0;
     right: 0;
-  }
-  .footer-grid {
-    grid-column: 2 / 3;
-    grid-row: 2 / 3;
-    z-index: 20;
-    pointer-events: none;
   }
 }
 </style>

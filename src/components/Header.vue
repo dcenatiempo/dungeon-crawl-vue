@@ -112,10 +112,6 @@ $header-height: 50px;
   justify-content: space-around;
   padding: 5px;
 
-  &.header1-grid {
-    grid-column: 1 / 4;
-    grid-row: 1;
-  }
   input[type='range'].slider {
     -webkit-appearance: none;
     width: 100%;

@@ -20,6 +20,7 @@ export default {
   },
   data: () => ({
     screen: 'start', // 'start', 'setup', 'game'
+    resizeObserver: null,
   }),
   computed: {},
   created() {
@@ -27,31 +28,37 @@ export default {
   },
   mounted() {
     const vm = this;
-    // Set up global resize listener so set browser window dimensions - { h, w }
-    function resizeFinished() {
-      getWindowSize();
-    }
 
-    function getWindowSize() {
-      let vpWidth = window.innerWidth;
-      let vpHeight = window.innerHeight;
-      let h = Math.floor(vpHeight);
-      let w = Math.floor(vpWidth);
-
-      vm.$store.commit('dungeon-crawl/app/setDimensions', { h, w });
+    // Set up global resize listener so set app container dimensions - { h, w }
+    function resizeFinished(entries) {
+      for (const entry of entries) {
+        if (entry.borderBoxSize) {
+          console.log('w', entry.borderBoxSize[0].inlineSize);
+          console.log('h', entry.borderBoxSize[0].blockSize);
+          vm.$store.commit('dungeon-crawl/app/setDimensions', {
+            h: entry.borderBoxSize[0].blockSize,
+            w: entry.borderBoxSize[0].inlineSize,
+          });
+        }
+      }
     }
 
     let timout;
 
-    window.onresize = function() {
-      clearTimeout(timout);
-      timout = setTimeout(resizeFinished, 20);
-    };
+    const appWindow = document.querySelector('#dungeon-crawl');
 
-    getWindowSize();
+    this.resizeObserver = new ResizeObserver(entries => {
+      clearTimeout(timout);
+      timout = setTimeout(() => resizeFinished(entries), 20);
+    });
+
+    this.resizeObserver.observe(appWindow);
   },
   beforeDestroy() {
+    // https://github.com/championswimmer/vuex-persist/issues/80
     this.$store.unregisterModule('dungeon-crawl');
+
+    this.resizeObserver?.disconnect();
   },
 };
 </script>

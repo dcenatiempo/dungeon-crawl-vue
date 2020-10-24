@@ -153,7 +153,7 @@ export default {
 <style lang="scss">
 .world {
   background: #262626;
-  height: calc(100vh - 50px);
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
