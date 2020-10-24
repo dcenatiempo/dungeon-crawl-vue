@@ -1,6 +1,3 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-
 import app from './app.js';
 import player from './player.js';
 import world from './world.js';
@@ -10,9 +7,7 @@ import monsters from './monsters.js';
 import { getRand, smallest, biggest } from '../lib/utils';
 // import { WEAPON_LIST, MATERIAL_LIST, GEAR_LIST } from '../lib/constants';
 
-Vue.use(Vuex);
-
-export default new Vuex.Store({
+export default {
   modules: {
     app,
     player,
@@ -39,7 +34,8 @@ export default new Vuex.Store({
     battle,
     restart,
   },
-});
+  namespaced: true,
+};
 
 /*******************************************************************************
  *
@@ -213,16 +209,18 @@ function getExpFromMonst(state) {
  *******************************************************************************/
 // returns damage from battle with monster[i].
 // attacker is boolean that answers "is the monster the attacker?"
-function battle({ dispatch, getters }, { index, attacker }) {
-  const monster = getters['monsters/currentMonsters'][index];
+function battle({ dispatch, rootGetters }, { index, attacker }) {
+  const monster = rootGetters['dungeon-crawl/monsters/currentMonsters'][index];
   let attackPoints = attacker
-    ? getters.getAttackPoints(monster)
-    : getters['player/attackPoints'];
+    ? rootGetters['dungeon-crawl/getAttackPoints'](monster)
+    : rootGetters['dungeon-crawl/player/attackPoints'];
   let defense = !attacker
-    ? getters.getDefense(monster)
-    : getters['player/defense'];
+    ? rootGetters['dungeon-crawl/getDefense'](monster)
+    : rootGetters['dungeon-crawl/player/defense'];
 
-  let dodge = !attacker ? getters.getDodge(monster) : getters['player/dodge'];
+  let dodge = !attacker
+    ? rootGetters['dungeon-crawl/getDodge'](monster)
+    : rootGetters['dungeon-crawl/player/dodge'];
 
   let damage = Math.round(attackPoints * (1 - defense));
 
@@ -242,15 +240,15 @@ function battle({ dispatch, getters }, { index, attacker }) {
     : !damage
     ? 'Missed!'
     : `+${damage} attack!`;
-  dispatch('player/addPlayerAlert', message, { root: true });
+  dispatch('player/addPlayerAlert', message);
 
   return damage;
 }
 
 function restart({ dispatch }) {
-  dispatch('app/restart', { root: true });
-  dispatch('market/restart', { root: true });
-  dispatch('monsters/restart', { root: true });
-  dispatch('world/restart', { root: true });
-  dispatch('player/restart', { root: true });
+  dispatch('app/restart');
+  dispatch('market/restart');
+  dispatch('monsters/restart');
+  dispatch('world/restart');
+  dispatch('player/restart');
 }

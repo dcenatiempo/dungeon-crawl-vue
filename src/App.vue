@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import state from './state';
 import StartScreen from './components/StartScreen.vue';
 import SetupScreen from './components/SetupScreen.vue';
 import GameScreen from './components/GameScreen.vue';
@@ -21,6 +22,9 @@ export default {
     screen: 'start', // 'start', 'setup', 'game'
   }),
   computed: {},
+  created() {
+    this.$store.registerModule('dungeon-crawl', state);
+  },
   mounted() {
     const vm = this;
     // Set up global resize listener so set browser window dimensions - { h, w }
@@ -34,7 +38,7 @@ export default {
       let h = Math.floor(vpHeight);
       let w = Math.floor(vpWidth);
 
-      vm.$store.commit('app/setDimensions', { h, w });
+      vm.$store.commit('dungeon-crawl/app/setDimensions', { h, w });
     }
 
     let timout;

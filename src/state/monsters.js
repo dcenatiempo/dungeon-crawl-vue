@@ -64,10 +64,12 @@ function createMonster({ rootGetters }, { monster, coords }) {
     gold: randomGold(monster.gold), // Gold carrying on person
     armor: getArmor(monster.tools), // Array of armor objects on person
     weapon: getWeapon(monster.tools), // Weapon on person
-    movesRemain: rootGetters.getMaxMoves(monster), // MaxMoves minus moves already taken
-    health: rootGetters.getMaxHealth(monster), // MaxHealth minus damage taken
+    movesRemain: rootGetters['dungeon-crawl/getMaxMoves'](monster), // MaxMoves minus moves already taken
+    health: rootGetters['dungeon-crawl/getMaxHealth'](monster), // MaxHealth minus damage taken
   };
-  tempMonster.attacksRemain = rootGetters.getMaxAttacks(tempMonster);
+  tempMonster.attacksRemain = rootGetters['dungeon-crawl/getMaxAttacks'](
+    tempMonster
+  );
   return tempMonster;
 }
 
@@ -135,7 +137,7 @@ async function populateLevel(
 ) {
   let newMonsters = JSON.parse(JSON.stringify(state.monsters));
   let monsterLevelList = [];
-  let currentWorld = rootGetters['world/world'][toLevel];
+  let currentWorld = rootGetters['dungeon-crawl/world/world'][toLevel];
   let remainder = toLevel % TOWN_EVERY;
   let rarity;
   for (let r = 1; r < currentWorld.length - 2; r++) {
@@ -246,16 +248,16 @@ function resetMoves({ state, commit, rootGetters }, index) {
   const level = state.playerLevel;
   let newMonsters = JSON.parse(JSON.stringify(state.monsters));
   const monster = newMonsters[level][index];
-  monster.movesRemain = rootGetters.getMaxMoves(monster);
+  monster.movesRemain = rootGetters['dungeon-crawl/getMaxMoves'](monster);
   commit('setMonsters', newMonsters);
 }
 
 // for monster index i, exaust moves, then attack
 async function monsterTurn({ dispatch, getters, rootGetters }, mi) {
-  const currentWorld = rootGetters['world/currentWorld'];
+  const currentWorld = rootGetters['dungeon-crawl/world/currentWorld'];
   const monsters = getters.currentMonsters;
   const m = monsters[mi];
-  const pL = rootGetters['player/locale'];
+  const pL = rootGetters['dungeon-crawl/player/locale'];
   let mL = m.locale;
   let moves = m.movesRemain;
   let attacks = m.attacksRemain;
@@ -293,7 +295,7 @@ async function monsterTurn({ dispatch, getters, rootGetters }, mi) {
       if (
         currentWorld[target[t].row][target[t].col].type === 'floor' &&
         !m?.isAlive &&
-        !rootGetters['player/isPlayer'](target[t])
+        !rootGetters['dungeon-crawl/player/isPlayer'](target[t])
       ) {
         mL.row = target[t].row;
         mL.col = target[t].col;
@@ -309,13 +311,13 @@ async function monsterTurn({ dispatch, getters, rootGetters }, mi) {
   // max out monster attacks
   while (moves > 0 && attacks > 0 && isByPlayer(mL, pL)) {
     const damage = await dispatch(
-      'battle',
+      'dungeon-crawl/battle',
       { index: mi, attacker: true },
       { root: true }
     );
 
     if (damage) {
-      dispatch('player/loseHealth', damage, { root: true });
+      dispatch('dungeon-crawl/player/loseHealth', damage, { root: true });
     }
     moves--;
     attacks--;

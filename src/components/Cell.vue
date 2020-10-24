@@ -25,21 +25,21 @@ export default {
   },
   data: () => ({}),
   computed: {
-    ...mapGetters('app', [
+    ...mapGetters('dungeon-crawl/app', [
       'tileSize',
       'toolTip',
       'mouseX',
       'mouseY',
       'toolTipObject',
     ]),
-    ...mapGetters('world', ['currentWorld']),
-    ...mapGetters('monsters', [
+    ...mapGetters('dungeon-crawl/world', ['currentWorld']),
+    ...mapGetters('dungeon-crawl/monsters', [
       'currentMonsters',
       'isAliveMonster',
       'isDeadMonster',
     ]),
-    ...mapGetters('player', ['level']),
-    ...mapGetters('market', ['currentMarket']),
+    ...mapGetters('dungeon-crawl/player', ['level']),
+    ...mapGetters('dungeon-crawl/market', ['currentMarket']),
     tile() {
       return this.inBounds
         ? this.currentWorld[this.cell[0]][this.cell[1]]
@@ -91,7 +91,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('app', ['updateToolTip']),
+    ...mapActions('dungeon-crawl/app', ['updateToolTip']),
     toggleToolTip(x, y, obj) {
       this.updateToolTip({
         mouseX: x,

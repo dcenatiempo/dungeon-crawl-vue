@@ -38,10 +38,15 @@ export default {
     ctx: null,
   }),
   computed: {
-    ...mapGetters('app', ['grid', 'tileSize', 'dimensions']),
-    ...mapGetters('world', ['currentWorld', 'isTownLevel']),
-    ...mapGetters('player', ['locale', 'isPlayer', 'alerts', 'flash']),
-    ...mapGetters('monsters', ['isMonster', 'currentMonsters']),
+    ...mapGetters('dungeon-crawl/app', ['grid', 'tileSize', 'dimensions']),
+    ...mapGetters('dungeon-crawl/world', ['currentWorld', 'isTownLevel']),
+    ...mapGetters('dungeon-crawl/player', [
+      'locale',
+      'isPlayer',
+      'alerts',
+      'flash',
+    ]),
+    ...mapGetters('dungeon-crawl/monsters', ['isMonster', 'currentMonsters']),
     tileBorder() {
       return this.tileSize * TILE_BORDER;
     },

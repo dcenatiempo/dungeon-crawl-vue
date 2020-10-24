@@ -183,9 +183,9 @@ const actions = {
   },
   changeLevel: ({ state, commit }, toLevel) => {
     commit('setLevel', toLevel);
-    commit('world/setLevel', toLevel, { root: true });
-    commit('monsters/setLevel', toLevel, { root: true });
-    commit('market/setLevel', toLevel, { root: true });
+    commit('dungeon-crawl/world/setLevel', toLevel, { root: true });
+    commit('dungeon-crawl/monsters/setLevel', toLevel, { root: true });
+    commit('dungeon-crawl/market/setLevel', toLevel, { root: true });
     commit('setMovesRemain', maxMoves(state) + 2);
   },
   gainExperience: ({ state, commit }, exp) => {
@@ -210,7 +210,11 @@ const actions = {
   // put item in hand
   pickUpItem: ({ state, commit, dispatch }, { item, index }) => {
     // Take item from monster
-    dispatch('monsters/takeItemFromMonster', { item, index }, { root: true });
+    dispatch(
+      'dungeon-crawl/monsters/takeItemFromMonster',
+      { item, index },
+      { root: true }
+    );
     // And put in player's hand or mouth
 
     const newHand = [...state.hand, item];
@@ -230,7 +234,7 @@ const actions = {
           : getters.goldCarryCapacity;
 
       let amount = Math.round(smallest(item.amount, capacity) * 100) / 100;
-
+      console.log(amount);
       newBag = state.bag.map(bagItem =>
         bagItem.type === item.type
           ? {
@@ -312,7 +316,7 @@ const actions = {
     return item;
   },
   pickUpItems: ({ getters, rootGetters, dispatch }, target) => {
-    const monsters = rootGetters['monsters/currentMonsters'];
+    const monsters = rootGetters['dungeon-crawl/monsters/currentMonsters'];
     //console.log("pick up items at "+target);
     // find all monsters on square
     const monstIDs = [];
@@ -368,7 +372,7 @@ const actions = {
       }
       // auto pick up weapon
       if (
-        weapon.rarity >= rootGetters['app/rarityTolerance'] &&
+        weapon.rarity >= rootGetters['dungeon-crawl/app/rarityTolerance'] &&
         weapon.name != 'fist'
       ) {
         if (getters.body.filter(i => i.type === 'weapon')[0].name === 'fist') {
@@ -384,7 +388,7 @@ const actions = {
         }
       }
       // auto pick up armor
-      if (armor.rarity >= rootGetters['app/rarityTolerance']) {
+      if (armor.rarity >= rootGetters['dungeon-crawl/app/rarityTolerance']) {
         if (getters.body.find(i => i.type == [armor.type]) === undefined) {
           // console.log(`pick up and arm ${armor.material} ${armor.name}`);
           dispatch('addPlayerAlert', `+ new ${armor.material} armor`);

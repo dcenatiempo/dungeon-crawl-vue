@@ -23,8 +23,8 @@ import ModalLabelRow from './ModalLabelRow.vue';
 export default {
   components: { ModalContentRow, ModalLabelRow },
   computed: {
-    ...mapGetters('app', ['displayMarket']),
-    ...mapGetters('player', ['body']),
+    ...mapGetters('dungeon-crawl/app', ['displayMarket']),
+    ...mapGetters('dungeon-crawl/player', ['body']),
   },
 };
 </script>

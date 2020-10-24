@@ -50,8 +50,12 @@ export default {
   props: {},
   data: () => ({}),
   computed: {
-    ...mapGetters('app', ['rarityTolerance', 'displayGear', 'tileSize']),
-    ...mapGetters('player', [
+    ...mapGetters('dungeon-crawl/app', [
+      'rarityTolerance',
+      'displayGear',
+      'tileSize',
+    ]),
+    ...mapGetters('dungeon-crawl/player', [
       'expLevel',
       'experience',
       'health',
@@ -68,7 +72,7 @@ export default {
   mounted() {},
   beforeDestroy() {},
   methods: {
-    ...mapMutations('app', [
+    ...mapMutations('dungeon-crawl/app', [
       'setDisplayMarket',
       'setRarityTolerance',
       'setTileSize',

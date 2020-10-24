@@ -84,8 +84,12 @@ export default {
   },
   data: () => ({}),
   computed: {
-    ...mapGetters(['getPlayerPrice', 'getMarketPrice', 'getName']),
-    ...mapGetters('player', [
+    ...mapGetters('dungeon-crawl', [
+      'getPlayerPrice',
+      'getMarketPrice',
+      'getName',
+    ]),
+    ...mapGetters('dungeon-crawl/player', [
       'level',
       'carryCapacity',
       'carryAmount',
@@ -95,7 +99,7 @@ export default {
       'bag',
       'gold',
     ]),
-    ...mapGetters('market', ['currentMarket']),
+    ...mapGetters('dungeon-crawl/market', ['currentMarket']),
     shouldDisplay() {
       if (!this.item) return false;
 
@@ -127,7 +131,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('player', [
+    ...mapActions('dungeon-crawl/player', [
       'pickUpItem',
       'storeItem',
       'removeItem',
@@ -135,7 +139,7 @@ export default {
       'dropItem',
       'armItem',
     ]),
-    ...mapActions('market', ['buyFromMarket', 'sellToMarket']),
+    ...mapActions('dungeon-crawl/market', ['buyFromMarket', 'sellToMarket']),
     sellItem(index) {
       const vm = this;
       const removeOrPullItem = vm.box === 'body' ? vm.removeItem : vm.pullItem;
@@ -152,8 +156,8 @@ export default {
 
       this.pullItem({ index: 0, amount: gold })
         .then(vm.dropItem)
-        .then(() => vm.sell({ gold, index }))
-        .then(vm.pickUpItem)
+        .then(() => vm.buyFromMarket({ gold, index }))
+        .then(item => vm.pickUpItem({ item }))
         .then(vm.storeItem);
     },
     armItemInner({ index, label }) {

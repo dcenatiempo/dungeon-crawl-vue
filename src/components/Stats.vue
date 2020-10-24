@@ -30,7 +30,7 @@ export default {
     char: { type: Object, default: null },
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters('dungeon-crawl', [
       'getAttackPoints',
       'getMaxHealth',
       'getExpLevel',

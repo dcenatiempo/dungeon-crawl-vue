@@ -78,10 +78,15 @@ export default {
     left: 0,
   }),
   computed: {
-    ...mapGetters(['getMarketPrice']),
-    ...mapGetters('app', ['toolTip', 'toolTipObject', 'mouseX', 'mouseY']),
+    ...mapGetters('dungeon-crawl', ['getMarketPrice']),
+    ...mapGetters('dungeon-crawl/app', [
+      'toolTip',
+      'toolTipObject',
+      'mouseX',
+      'mouseY',
+    ]),
     isMonster() {
-      return this.$store.getters['monsters/isMonster'](this.item);
+      return this.$store.getters['dungeon-crawl/monsters/isMonster'](this.item);
     },
     isPlayer() {
       return this.item.type === 'player';

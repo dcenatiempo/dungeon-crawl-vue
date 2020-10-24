@@ -46,22 +46,26 @@ export default {
     displaySetByMarket: false,
   }),
   computed: {
-    ...mapGetters(['getExpFromMonst']),
-    ...mapGetters('app', ['displayGear', 'displayMarket', 'toolTip']),
-    ...mapGetters('world', [
+    ...mapGetters('dungeon-crawl', ['getExpFromMonst']),
+    ...mapGetters('dungeon-crawl/app', [
+      'displayGear',
+      'displayMarket',
+      'toolTip',
+    ]),
+    ...mapGetters('dungeon-crawl/world', [
       'currentWorld',
       'isTownLevel',
       'levels',
       'getLevel',
     ]),
-    ...mapGetters('player', [
+    ...mapGetters('dungeon-crawl/player', [
       'level',
       'locale',
       'movesRemain',
       'attacksRemain',
       'health',
     ]),
-    ...mapGetters('monsters', ['currentMonsters', 'isMonster']),
+    ...mapGetters('dungeon-crawl/monsters', ['currentMonsters', 'isMonster']),
   },
   watch: {
     health(health) {
@@ -104,23 +108,26 @@ export default {
     window.removeEventListener('keydown', this.handleKeypress);
   },
   methods: {
-    ...mapActions(['battle', 'restart']),
-    ...mapActions('player', [
+    ...mapActions('dungeon-crawl', ['battle', 'restart']),
+    ...mapActions('dungeon-crawl/player', [
       'changeLevel',
       'movePlayer',
       'gainExperience',
       'useAttack',
       'pickUpItems',
     ]),
-    ...mapActions('player', { resetPlayerMoves: 'resetMoves' }),
-    ...mapActions('world', ['updateVisibility', 'addNewLevel']),
-    ...mapActions('monsters', [
+    ...mapActions('dungeon-crawl/player', { resetPlayerMoves: 'resetMoves' }),
+    ...mapActions('dungeon-crawl/world', ['updateVisibility', 'addNewLevel']),
+    ...mapActions('dungeon-crawl/monsters', [
       'monsterTurn',
       'populateLevel',
       'monsterLoseHealth',
     ]),
-    ...mapActions('market', ['populateMarket']),
-    ...mapMutations('app', ['setDisplayMarket', 'setDisplayGear']),
+    ...mapActions('dungeon-crawl/market', ['populateMarket']),
+    ...mapMutations('dungeon-crawl/app', [
+      'setDisplayMarket',
+      'setDisplayGear',
+    ]),
     movePlayerAction(target) {
       this.movePlayer(target);
       this.updateVisibility(target);

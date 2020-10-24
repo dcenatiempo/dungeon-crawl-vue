@@ -26,9 +26,9 @@ export default {
   props: {},
   data: () => ({}),
   computed: {
-    ...mapGetters('player', ['level']),
-    ...mapGetters('market', ['currentMarket']),
-    ...mapGetters('app', ['displayMarket']),
+    ...mapGetters('dungeon-crawl/player', ['level']),
+    ...mapGetters('dungeon-crawl/market', ['currentMarket']),
+    ...mapGetters('dungeon-crawl/app', ['displayMarket']),
     marketId() {
       return this.level / TOWN_EVERY;
     },
