@@ -180,7 +180,7 @@ export default {
 </script>
 
 <style lang="scss">
-.modal-content-row {
+#dungeon-crawl .modal-content-row {
   display: grid;
   grid-template-columns: auto auto 35px 35px 35px;
 

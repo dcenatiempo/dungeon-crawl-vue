@@ -109,7 +109,7 @@ export default {
 </script>
 
 <style lang="scss">
-.inspector {
+#dungeon-crawl .inspector {
   background: rgba(255, 255, 255, 0.6);
   position: fixed;
   z-index: 50;

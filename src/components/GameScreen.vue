@@ -301,7 +301,7 @@ export default {
 <style lang="scss">
 $header-height: 50px;
 
-.game-screen {
+#dungeon-crawl .game-screen {
   position: relative;
   display: flex;
   flex-flow: column nowrap;

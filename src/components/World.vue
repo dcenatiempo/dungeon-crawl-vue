@@ -155,7 +155,7 @@ export default {
 </script>
 
 <style lang="scss">
-.world {
+#dungeon-crawl .world {
   background: #262626;
   flex: 1;
   display: flex;

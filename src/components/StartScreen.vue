@@ -13,7 +13,7 @@ export default {
 </script>
 
 <style lang="scss">
-.start-screen {
+#dungeon-crawl .start-screen {
   height: 100%;
   background: #262626;
   padding: 100px;

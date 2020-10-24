@@ -44,6 +44,6 @@ export default {
 </script>
 
 <style lang="scss">
-.stats {
+#dungeon-crawl .stats {
 }
 </style>

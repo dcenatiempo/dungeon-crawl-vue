@@ -30,7 +30,7 @@ export default {
 </script>
 
 <style lang="scss">
-.gear {
+#dungeon-crawl .gear {
   background: rgba(255, 255, 255, 0.5);
 }
 </style>

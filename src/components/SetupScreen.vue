@@ -11,6 +11,6 @@ export default {
 </script>
 
 <style lang="scss">
-.setup-screen {
+#dungeon-crawl .setup-screen {
 }
 </style>

@@ -34,7 +34,7 @@ export default {
 </script>
 
 <style lang="scss">
-.bag {
+#dungeon-crawl .bag {
   background: rgba(255, 255, 255, 0.5);
 }
 </style>

@@ -17,6 +17,6 @@ export default {
 </script>
 
 <style lang="scss">
-.my-component {
+#dungeon-crawl .my-component {
 }
 </style>

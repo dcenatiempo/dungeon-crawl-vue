@@ -62,16 +62,16 @@ export default {
 </script>
 
 <style lang="scss">
-html {
-  overflow: hidden;
-  height: 100%;
-}
-body {
-  height: 100%;
-  overflow: auto;
-  margin: 0;
-  background: #262626;
-}
+// html {
+//   overflow: hidden;
+//   height: 100%;
+// }
+// body {
+//   height: 100%;
+//   overflow: auto;
+//   margin: 0;
+//   background: #262626;
+// }
 
 #dungeon-crawl {
   position: relative;

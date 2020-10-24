@@ -101,7 +101,7 @@ $slider-width: 20%;
 $slider-height: 5px;
 $header-height: 50px;
 
-.header {
+#dungeon-crawl .header {
   position: absolute;
   top: 0;
   left: 0;

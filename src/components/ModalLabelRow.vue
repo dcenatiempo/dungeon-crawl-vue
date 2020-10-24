@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style lang="scss">
-.modal-label-row {
+#dungeon-crawl .modal-label-row {
   display: grid;
   grid-template-columns: auto auto 35px 35px 35px;
   .label {

@@ -45,7 +45,7 @@ export default {
 </script>
 
 <style lang="scss">
-.market {
+#dungeon-crawl .market {
   background: rgba(255, 255, 255, 0.5);
 }
 </style>
