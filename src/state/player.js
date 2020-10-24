@@ -234,7 +234,7 @@ const actions = {
           : getters.goldCarryCapacity;
 
       let amount = Math.round(smallest(item.amount, capacity) * 100) / 100;
-      console.log(amount);
+
       newBag = state.bag.map(bagItem =>
         bagItem.type === item.type
           ? {

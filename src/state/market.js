@@ -36,7 +36,7 @@ const actions = {
     const newMarket = JSON.parse(JSON.stringify(state.market));
     const marketId = state.playerLevel / TOWN_EVERY;
     const gold = rootGetters['dungeon-crawl/getPlayerPrice'](item);
-    console.log(gold);
+
     if (item.type === 'food') newMarket[marketId].bag[0].amount += 1;
     else newMarket[marketId].bag.push(item);
 

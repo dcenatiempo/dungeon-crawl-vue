@@ -9501,7 +9501,6 @@ var player_actions = {
       //console.log("adding "+item.type+" to bag")
       var capacity = item.type === 'food' ? getters.foodCarryCapacity : getters.goldCarryCapacity;
       var amount = Math.round(smallest(item.amount, capacity) * 100) / 100;
-      console.log(amount);
       newBag = state.bag.map(function (bagItem) {
         return bagItem.type === item.type ? _objectSpread2(_objectSpread2({}, bagItem), {}, {
           amount: Math.round((bagItem.amount + amount) * 10) / 10
@@ -9812,6 +9811,7 @@ function isPlayer(state) {
 
 
 
+
 var world_state = function state() {
   return {
     world: [createTownLevel(0)],
@@ -9843,30 +9843,31 @@ var world_mutations = {
   setLevel: function setLevel(state, val) {
     state.playerLevel = val;
   },
-  updateDungeonLevel: function updateDungeonLevel(state, _ref) {
-    var level = _ref.level,
-        newLevel = _ref.newLevel;
-    state.world[level] = newLevel;
+  updateDungeonLevel: function updateDungeonLevel(state, newLevel) {
+    var newWorld = _objectSpread2({}, state.world);
+
+    newWorld[state.playerLevel] = newLevel;
+    state.world = newWorld;
   }
 };
 var world_actions = {
-  restart: function restart(_ref2) {
-    var commit = _ref2.commit;
+  restart: function restart(_ref) {
+    var commit = _ref.commit;
     commit('setWorld', [createTownLevel(0)]);
     commit('setLevel', 0);
   },
-  addNewLevel: function addNewLevel(_ref3, toLevel) {
-    var state = _ref3.state,
-        commit = _ref3.commit;
+  addNewLevel: function addNewLevel(_ref2, toLevel) {
+    var state = _ref2.state,
+        commit = _ref2.commit;
     var level = state.playerLevel;
     var newWorld = JSON.parse(JSON.stringify(state.world));
     if (level % TOWN_EVERY > 0) newWorld.push(createDungeonLevel(toLevel));else newWorld.push(createTownLevel(toLevel));
     commit('setWorld', newWorld);
   },
-  updateVisibility: function updateVisibility(_ref4, target) {
-    var state = _ref4.state,
-        getters = _ref4.getters,
-        commit = _ref4.commit;
+  updateVisibility: function updateVisibility(_ref3, target) {
+    var state = _ref3.state,
+        getters = _ref3.getters,
+        commit = _ref3.commit;
     var level = state.playerLevel;
     if (level % TOWN_EVERY <= 0) return;
     var shadowSize = 5; //1-5
@@ -9875,9 +9876,9 @@ var world_actions = {
     var coords;
     var shadows = SHADOW_LIST; // takes relative coordinates and converts to absolute coordinates then changes to visible
 
-    function makeFog(_ref5, q) {
-      var relativeRow = _ref5.relativeRow,
-          relativeCol = _ref5.relativeCol;
+    function makeFog(_ref4, q) {
+      var relativeRow = _ref4.relativeRow,
+          relativeCol = _ref4.relativeCol;
 
       //find matching shaddows
       for (var i = 0; i < shadows.length; i++) {
@@ -10077,10 +10078,7 @@ var world_actions = {
 
     dungeon[target.row][target.col].fog = 0; // make players location (0,0) un-foggy
 
-    commit('updateDungeonLevel', {
-      level: level,
-      newLevel: dungeon
-    });
+    commit('updateDungeonLevel', dungeon);
   }
 };
 /* harmony default export */ var world = ({
@@ -10305,7 +10303,6 @@ var market_actions = {
     var newMarket = JSON.parse(JSON.stringify(state.market));
     var marketId = state.playerLevel / TOWN_EVERY;
     var gold = rootGetters['dungeon-crawl/getPlayerPrice'](item);
-    console.log(gold);
     if (item.type === 'food') newMarket[marketId].bag[0].amount += 1;else newMarket[marketId].bag.push(item);
     newMarket[marketId].gold -= gold;
     commit('setMarket', newMarket);
@@ -10473,13 +10470,18 @@ var monsters_mutations = {
   setMonsters: function setMonsters(state, val) {
     state.monsters = val;
   },
+  setMonster: function setMonster(state, _ref) {
+    var monster = _ref.monster,
+        index = _ref.index;
+    state.monsters[state.playerLevel][index] = monster;
+  },
   setLevel: function setLevel(state, val) {
     state.playerLevel = val;
   }
 };
 var monsters_actions = {
-  restart: function restart(_ref) {
-    var commit = _ref.commit;
+  restart: function restart(_ref2) {
+    var commit = _ref2.commit;
     commit('setMonsters', [[]]);
     commit('setLevel', 0);
   },
@@ -10488,7 +10490,6 @@ var monsters_actions = {
   takeItemFromMonster: takeItemFromMonster,
   monsterFlashOver: monsterFlashOver,
   monsterTurn: monsterTurn,
-  resetMoves: resetMoves,
   createMonster: createMonster
 };
 /* harmony default export */ var state_monsters = ({
@@ -10504,10 +10505,10 @@ var monsters_actions = {
  *
  *******************************************************************************/
 
-function createMonster(_ref2, _ref3) {
-  var rootGetters = _ref2.rootGetters;
-  var monster = _ref3.monster,
-      coords = _ref3.coords;
+function createMonster(_ref3, _ref4) {
+  var rootGetters = _ref3.rootGetters;
+  var monster = _ref4.monster,
+      coords = _ref4.coords;
 
   var tempMonster = _objectSpread2(_objectSpread2({}, monster), {}, {
     alert: [],
@@ -10586,14 +10587,14 @@ function populateLevel(_x, _x2) {
 }
 
 function _populateLevel() {
-  _populateLevel = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref4, toLevel) {
+  _populateLevel = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref5, toLevel) {
     var state, commit, dispatch, rootGetters, newMonsters, monsterLevelList, currentWorld, remainder, rarity, r, c, newMonster, percent, _newMonster;
 
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            state = _ref4.state, commit = _ref4.commit, dispatch = _ref4.dispatch, rootGetters = _ref4.rootGetters;
+            state = _ref5.state, commit = _ref5.commit, dispatch = _ref5.dispatch, rootGetters = _ref5.rootGetters;
             newMonsters = JSON.parse(JSON.stringify(state.monsters));
             monsterLevelList = [];
             currentWorld = rootGetters['dungeon-crawl/world/world'][toLevel];
@@ -10700,12 +10701,12 @@ function _populateLevel() {
   return _populateLevel.apply(this, arguments);
 }
 
-function monsterLoseHealth(_ref5, _ref6) {
-  var state = _ref5.state,
-      commit = _ref5.commit,
-      dispatch = _ref5.dispatch;
-  var index = _ref6.index,
-      damage = _ref6.damage;
+function monsterLoseHealth(_ref6, _ref7) {
+  var state = _ref6.state,
+      commit = _ref6.commit,
+      dispatch = _ref6.dispatch;
+  var index = _ref7.index,
+      damage = _ref7.damage;
   // locate monster
   var level = state.playerLevel;
   var newMonsters = JSON.parse(JSON.stringify(state.monsters));
@@ -10720,11 +10721,11 @@ function monsterLoseHealth(_ref5, _ref6) {
   commit('setMonsters', newMonsters);
 }
 
-function takeItemFromMonster(_ref7, _ref8) {
-  var state = _ref7.state,
-      commit = _ref7.commit;
-  var item = _ref8.item,
-      index = _ref8.index;
+function takeItemFromMonster(_ref8, _ref9) {
+  var state = _ref8.state,
+      commit = _ref8.commit;
+  var item = _ref9.item,
+      index = _ref9.index;
   if (index === null || index === undefined) return; // locate monster
 
   var level = state.playerLevel;
@@ -10737,26 +10738,15 @@ function takeItemFromMonster(_ref7, _ref8) {
   commit('setMonsters', newMonsters);
 }
 
-function monsterFlashOver(_ref9, index) {
-  var state = _ref9.state,
-      commit = _ref9.commit;
+function monsterFlashOver(_ref10, index) {
+  var state = _ref10.state,
+      commit = _ref10.commit;
   // locate monster
   var level = state.playerLevel;
   var newMonsters = JSON.parse(JSON.stringify(state.monsters));
   var newMonster = newMonsters[level][index]; // turn off flash
 
   newMonster.flash = false;
-  commit('setMonsters', newMonsters);
-}
-
-function resetMoves(_ref10, index) {
-  var state = _ref10.state,
-      commit = _ref10.commit,
-      rootGetters = _ref10.rootGetters;
-  var level = state.playerLevel;
-  var newMonsters = JSON.parse(JSON.stringify(state.monsters));
-  var monster = newMonsters[level][index];
-  monster.movesRemain = rootGetters['dungeon-crawl/getMaxMoves'](monster);
   commit('setMonsters', newMonsters);
 } // for monster index i, exaust moves, then attack
 
@@ -10767,7 +10757,7 @@ function monsterTurn(_x3, _x4) {
 
 function _monsterTurn() {
   _monsterTurn = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref11, mi) {
-    var dispatch, getters, rootGetters, currentWorld, monsters, m, pL, mL, moves, attacks, target, deltaL, isByPlayer, moveRecursive, damage;
+    var dispatch, commit, getters, rootGetters, currentWorld, monsters, m, pL, mL, moves, attacks, target, deltaL, isByPlayer, moveRecursive, damage;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -10818,10 +10808,10 @@ function _monsterTurn() {
               };
             };
 
-            dispatch = _ref11.dispatch, getters = _ref11.getters, rootGetters = _ref11.rootGetters;
+            dispatch = _ref11.dispatch, commit = _ref11.commit, getters = _ref11.getters, rootGetters = _ref11.rootGetters;
             currentWorld = rootGetters['dungeon-crawl/world/currentWorld'];
             monsters = getters.currentMonsters;
-            m = monsters[mi];
+            m = JSON.parse(JSON.stringify(monsters[mi]));
             pL = rootGetters['dungeon-crawl/player/locale'];
             mL = m.locale;
             moves = m.movesRemain;
@@ -10858,9 +10848,13 @@ function _monsterTurn() {
             break;
 
           case 22:
-            dispatch('resetMoves', mi);
+            m.movesRemain = rootGetters['dungeon-crawl/getMaxMoves'](m);
+            commit('setMonster', {
+              monster: m,
+              index: mi
+            });
 
-          case 23:
+          case 24:
           case "end":
             return _context2.stop();
         }

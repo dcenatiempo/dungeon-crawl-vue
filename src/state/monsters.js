@@ -28,6 +28,9 @@ const mutations = {
   setMonsters(state, val) {
     state.monsters = val;
   },
+  setMonster(state, { monster, index }) {
+    state.monsters[state.playerLevel][index] = monster;
+  },
   setLevel(state, val) {
     state.playerLevel = val;
   },
@@ -43,7 +46,6 @@ const actions = {
   takeItemFromMonster,
   monsterFlashOver,
   monsterTurn,
-  resetMoves,
   createMonster,
 };
 
@@ -244,19 +246,11 @@ function monsterFlashOver({ state, commit }, index) {
   commit('setMonsters', newMonsters);
 }
 
-function resetMoves({ state, commit, rootGetters }, index) {
-  const level = state.playerLevel;
-  let newMonsters = JSON.parse(JSON.stringify(state.monsters));
-  const monster = newMonsters[level][index];
-  monster.movesRemain = rootGetters['dungeon-crawl/getMaxMoves'](monster);
-  commit('setMonsters', newMonsters);
-}
-
 // for monster index i, exaust moves, then attack
-async function monsterTurn({ dispatch, getters, rootGetters }, mi) {
+async function monsterTurn({ dispatch, commit, getters, rootGetters }, mi) {
   const currentWorld = rootGetters['dungeon-crawl/world/currentWorld'];
   const monsters = getters.currentMonsters;
-  const m = monsters[mi];
+  const m = JSON.parse(JSON.stringify(monsters[mi]));
   const pL = rootGetters['dungeon-crawl/player/locale'];
   let mL = m.locale;
   let moves = m.movesRemain;
@@ -322,5 +316,6 @@ async function monsterTurn({ dispatch, getters, rootGetters }, mi) {
     moves--;
     attacks--;
   }
-  dispatch('resetMoves', mi);
+  m.movesRemain = rootGetters['dungeon-crawl/getMaxMoves'](m);
+  commit('setMonster', { monster: m, index: mi });
 }

@@ -23,8 +23,10 @@ const mutations = {
   setLevel(state, val) {
     state.playerLevel = val;
   },
-  updateDungeonLevel(state, { level, newLevel }) {
-    state.world[level] = newLevel;
+  updateDungeonLevel(state, newLevel) {
+    const newWorld = { ...state.world };
+    newWorld[state.playerLevel] = newLevel;
+    state.world = newWorld;
   },
 };
 
@@ -265,7 +267,7 @@ const actions = {
     dungeon[target.row][target.col].vis = true; // make players location (0,0) visible
     dungeon[target.row][target.col].fog = 0; // make players location (0,0) un-foggy
 
-    commit('updateDungeonLevel', { level, newLevel: dungeon });
+    commit('updateDungeonLevel', dungeon);
   },
 };
 

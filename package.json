@@ -1,6 +1,6 @@
 {
   "name": "dungeon-crawl",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "dist/dungeon-crawl.common.js",
   "private": true,
   "scripts": {
