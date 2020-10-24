@@ -3362,7 +3362,7 @@ module.exports = {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".game-screen{position:relative;height:100vh;display:flex;flex-flow:column nowrap}.game-screen .left-sidebar-grid{z-index:10;position:fixed;top:50px;bottom:0;left:0;opacity:.85}.game-screen .right-sidebar-grid{z-index:10;position:fixed;top:50px;bottom:0;right:0;opacity:.85}.game-screen footer .dungeon-title{color:#d3d3d3;text-align:center;margin:10px 0;position:absolute;bottom:0;left:0;right:0}", ""]);
+exports.push([module.i, ".game-screen{position:relative;display:flex;flex-flow:column nowrap}.game-screen .left-sidebar-grid{z-index:10;position:fixed;top:50px;bottom:0;left:0;opacity:.85}.game-screen .right-sidebar-grid{z-index:10;position:fixed;top:50px;bottom:0;right:0;opacity:.85}.game-screen footer .dungeon-title{color:#d3d3d3;text-align:center;margin:10px 0;position:absolute;bottom:0;left:0;right:0}", ""]);
 // Exports
 module.exports = exports;
 
@@ -4130,7 +4130,7 @@ module.exports = isForced;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "html{overflow:hidden}body,html{height:100%}body{overflow:auto;margin:0;background:#262626}#dungeon-crawl{position:relative}#dungeon-crawl *{-ms-box-sizing:border-box;box-sizing:border-box;font-family:Helvetica,sans-serif}#dungeon-crawl .flex-row{display:flex;flex-flow:row wrap}#dungeon-crawl .flex-col{display:flex;flex-flow:column nowrap}", ""]);
+exports.push([module.i, "html{overflow:hidden}body,html{height:100%}body{overflow:auto;margin:0;background:#262626}#dungeon-crawl{position:relative;height:100vh}#dungeon-crawl>*{height:100%;background:#262626}#dungeon-crawl *{-ms-box-sizing:border-box;box-sizing:border-box;font-family:Helvetica,sans-serif}#dungeon-crawl .flex-row{display:flex;flex-flow:row wrap}#dungeon-crawl .flex-col{display:flex;flex-flow:column nowrap}", ""]);
 // Exports
 module.exports = exports;
 
@@ -6302,7 +6302,7 @@ exports.f = NASHORN_BUG ? function propertyIsEnumerable(V) {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "", ""]);
+exports.push([module.i, ".start-screen{height:100%;background:#262626;padding:100px;display:flex;flex-flow:column nowrap;justify-content:center;align-items:center}.start-screen button{padding:20px;background:#8b0000;color:#000;border:none;border-radius:10px}", ""]);
 // Exports
 module.exports = exports;
 
@@ -7814,12 +7814,12 @@ if (true) {
     }
   });
 }
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=d0a934ec&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=ac435e84&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"dungeon-crawl"}},[(_vm.screen === 'start')?_c('StartScreen',{on:{"start":function($event){_vm.screen = 'game'}}}):_vm._e(),(_vm.screen === 'setup')?_c('SetupScreen'):_vm._e(),(_vm.screen === 'game')?_c('GameScreen',{on:{"restart":function($event){_vm.screen = 'start'}}}):_vm._e()],1)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=d0a934ec&
+// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=ac435e84&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.symbol.js
 var es_symbol = __webpack_require__("a4d3");
@@ -7945,6 +7945,9 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     }
   };
 }
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.concat.js
+var es_array_concat = __webpack_require__("99af");
+
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.filter.js
 var es_array_filter = __webpack_require__("4de4");
 
@@ -9198,9 +9201,6 @@ function getGridSize(window, cellSize) {
     width: cols
   };
 }
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.concat.js
-var es_array_concat = __webpack_require__("99af");
-
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.find.js
 var es_array_find = __webpack_require__("7db0");
 
@@ -10946,6 +10946,7 @@ function _monsterTurn() {
 
 
 
+
  // import { WEAPON_LIST, MATERIAL_LIST, GEAR_LIST } from '../lib/constants';
 
 /* harmony default export */ var src_state = ({
@@ -11162,12 +11163,13 @@ function battle(_ref2, _ref3) {
   var defense = !attacker ? rootGetters['dungeon-crawl/getDefense'](monster) : rootGetters['dungeon-crawl/player/defense'];
   var dodge = !attacker ? rootGetters['dungeon-crawl/getDodge'](monster) : rootGetters['dungeon-crawl/player/dodge'];
   var damage = Math.round(attackPoints * (1 - defense));
-  console.log(attackPoints + ' attack -' + defense + '% defense = ' + damage + ' damage'); //If defender dodges attacke, no damage is done
+  console.log("".concat(attacker ? 'Monster' : 'Player', " attacks with ").concat(attackPoints)); //If defender dodges attack, no damage is done
 
   if (getRand(0, 100) <= dodge) {
-    damage = 0; //console.log("attack was dodged!")
+    damage = 0;
   }
 
+  console.log("".concat(attacker ? 'Plater' : 'Monster', " ").concat(!damage ? 'dodges!' : "defends with ".concat(defense, "% to take ").concat(damage, " damage")));
   var message = attacker ? !damage ? 'Dodge!' : "-".concat(damage, " health") : !damage ? 'Missed!' : "+".concat(damage, " attack!");
   dispatch('player/addPlayerAlert', message);
   return damage;
@@ -11181,12 +11183,12 @@ function state_restart(_ref4) {
   dispatch('world/restart');
   dispatch('player/restart');
 }
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/StartScreen.vue?vue&type=template&id=2d5d203b&
-var StartScreenvue_type_template_id_2d5d203b_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"start-screen"},[_vm._v(" Welcom to Dungeon Crawl "),_c('button',{on:{"click":function($event){return _vm.$emit('start')}}},[_vm._v("Start Game")])])}
-var StartScreenvue_type_template_id_2d5d203b_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/StartScreen.vue?vue&type=template&id=1ed5a4bf&
+var StartScreenvue_type_template_id_1ed5a4bf_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"start-screen"},[_c('h1',[_vm._v("Welcom to Dungeon Crawl")]),_c('button',{on:{"click":function($event){return _vm.$emit('start')}}},[_c('h2',[_vm._v("Start Game")])])])}
+var StartScreenvue_type_template_id_1ed5a4bf_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/StartScreen.vue?vue&type=template&id=2d5d203b&
+// CONCATENATED MODULE: ./src/components/StartScreen.vue?vue&type=template&id=1ed5a4bf&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/StartScreen.vue?vue&type=script&lang=js&
 //
@@ -11316,8 +11318,8 @@ function normalizeComponent (
 
 var component = normalizeComponent(
   components_StartScreenvue_type_script_lang_js_,
-  StartScreenvue_type_template_id_2d5d203b_render,
-  StartScreenvue_type_template_id_2d5d203b_staticRenderFns,
+  StartScreenvue_type_template_id_1ed5a4bf_render,
+  StartScreenvue_type_template_id_1ed5a4bf_staticRenderFns,
   false,
   null,
   null,
@@ -11369,12 +11371,12 @@ var SetupScreen_component = normalizeComponent(
 )
 
 /* harmony default export */ var SetupScreen = (SetupScreen_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GameScreen.vue?vue&type=template&id=1c54c072&
-var GameScreenvue_type_template_id_1c54c072_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"game-screen"},[_c('Header'),_c('World'),(_vm.displayGear)?[_c('div',{staticClass:"left-sidebar-grid",attrs:{"id":"l-sidebar"}},[_c('Bag'),_c('Gear')],1)]:_vm._e(),(_vm.displayMarket)?[_c('div',{staticClass:"right-sidebar-grid",attrs:{"id":"r-sidebar"}},[_c('Market')],1)]:_vm._e(),_c('footer',[_c('h1',{staticClass:"dungeon-title"},[_vm._v(" "+_vm._s(_vm.isTownLevel ? 'Town' : 'Dungeon')+" Level "+_vm._s(_vm.level + 1)+" ")])]),(_vm.toolTip)?_c('Inspector'):_vm._e()],2)}
-var GameScreenvue_type_template_id_1c54c072_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GameScreen.vue?vue&type=template&id=036b9498&
+var GameScreenvue_type_template_id_036b9498_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"game-screen"},[_c('Header'),_c('World'),(_vm.displayGear)?[_c('div',{staticClass:"left-sidebar-grid",attrs:{"id":"l-sidebar"}},[_c('Bag'),_c('Gear')],1)]:_vm._e(),(_vm.displayMarket)?[_c('div',{staticClass:"right-sidebar-grid",attrs:{"id":"r-sidebar"}},[_c('Market')],1)]:_vm._e(),_c('footer',[_c('h1',{staticClass:"dungeon-title"},[_vm._v(" "+_vm._s(_vm.isTownLevel ? 'Town' : 'Dungeon')+" Level "+_vm._s(_vm.level + 1)+" ")])]),(_vm.toolTip)?_c('Inspector'):_vm._e()],2)}
+var GameScreenvue_type_template_id_036b9498_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/GameScreen.vue?vue&type=template&id=1c54c072&
+// CONCATENATED MODULE: ./src/components/GameScreen.vue?vue&type=template&id=036b9498&
 
 // EXTERNAL MODULE: ./node_modules/vuex/dist/vuex.esm.js
 var vuex_esm = __webpack_require__("2f62");
@@ -11485,12 +11487,12 @@ var Header_component = normalizeComponent(
 )
 
 /* harmony default export */ var Header = (Header_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/World.vue?vue&type=template&id=35d1482e&
-var Worldvue_type_template_id_35d1482e_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"world"},[_c('canvas',{attrs:{"id":"canvas","height":_vm.canvasHeight,"width":_vm.canvasWidth},on:{"click":_vm.handleClick}})])}
-var Worldvue_type_template_id_35d1482e_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/World.vue?vue&type=template&id=8ff305c4&
+var Worldvue_type_template_id_8ff305c4_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"world"},[_c('canvas',{attrs:{"id":"canvas","height":_vm.canvasHeight,"width":_vm.canvasWidth},on:{"click":_vm.handleClick}})])}
+var Worldvue_type_template_id_8ff305c4_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/World.vue?vue&type=template&id=35d1482e&
+// CONCATENATED MODULE: ./src/components/World.vue?vue&type=template&id=8ff305c4&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.regexp.exec.js
 var es_regexp_exec = __webpack_require__("ac1f");
@@ -11575,7 +11577,7 @@ var colors = {
 
     this.timer = setInterval(function () {
       return vm.drawWorld();
-    }, 333);
+    }, 33);
   },
   beforeDestroy: function beforeDestroy() {
     clearInterval(this.timer);
@@ -11673,8 +11675,8 @@ var Worldvue_type_style_index_0_lang_scss_ = __webpack_require__("6a64");
 
 var World_component = normalizeComponent(
   components_Worldvue_type_script_lang_js_,
-  Worldvue_type_template_id_35d1482e_render,
-  Worldvue_type_template_id_35d1482e_staticRenderFns,
+  Worldvue_type_template_id_8ff305c4_render,
+  Worldvue_type_template_id_8ff305c4_staticRenderFns,
   false,
   null,
   null,
@@ -12705,8 +12707,8 @@ var GameScreenvue_type_style_index_0_lang_scss_ = __webpack_require__("6cf5");
 
 var GameScreen_component = normalizeComponent(
   components_GameScreenvue_type_script_lang_js_,
-  GameScreenvue_type_template_id_1c54c072_render,
-  GameScreenvue_type_template_id_1c54c072_staticRenderFns,
+  GameScreenvue_type_template_id_036b9498_render,
+  GameScreenvue_type_template_id_036b9498_staticRenderFns,
   false,
   null,
   null,
@@ -12758,8 +12760,6 @@ var GameScreen_component = normalizeComponent(
           var entry = _step.value;
 
           if (entry.borderBoxSize) {
-            console.log('w', entry.borderBoxSize[0].inlineSize);
-            console.log('h', entry.borderBoxSize[0].blockSize);
             vm.$store.commit('dungeon-crawl/app/setDimensions', {
               h: entry.borderBoxSize[0].blockSize,
               w: entry.borderBoxSize[0].inlineSize

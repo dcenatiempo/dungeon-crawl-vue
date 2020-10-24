@@ -79,7 +79,7 @@ export default {
     this.ctx = this.canvas.getContext('2d');
     const vm = this;
     // no initial render without setTimeout
-    this.timer = setInterval(() => vm.drawWorld(), 333);
+    this.timer = setInterval(() => vm.drawWorld(), 33);
   },
   beforeDestroy() {
     clearInterval(this.timer);

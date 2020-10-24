@@ -33,8 +33,6 @@ export default {
     function resizeFinished(entries) {
       for (const entry of entries) {
         if (entry.borderBoxSize) {
-          console.log('w', entry.borderBoxSize[0].inlineSize);
-          console.log('h', entry.borderBoxSize[0].blockSize);
           vm.$store.commit('dungeon-crawl/app/setDimensions', {
             h: entry.borderBoxSize[0].blockSize,
             w: entry.borderBoxSize[0].inlineSize,
@@ -77,6 +75,11 @@ body {
 
 #dungeon-crawl {
   position: relative;
+  height: 100vh;
+  > * {
+    height: 100%;
+    background: #262626;
+  }
 
   * {
     -webkit-box-sizing: border-box;

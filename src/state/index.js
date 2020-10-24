@@ -225,14 +225,20 @@ function battle({ dispatch, rootGetters }, { index, attacker }) {
   let damage = Math.round(attackPoints * (1 - defense));
 
   console.log(
-    attackPoints + ' attack -' + defense + '% defense = ' + damage + ' damage'
+    `${attacker ? 'Monster' : 'Player'} attacks with ${attackPoints}`
   );
 
-  //If defender dodges attacke, no damage is done
+  //If defender dodges attack, no damage is done
   if (getRand(0, 100) <= dodge) {
     damage = 0;
-    //console.log("attack was dodged!")
   }
+
+  console.log(
+    `${attacker ? 'Plater' : 'Monster'} ${
+      !damage ? 'dodges!' : `defends with ${defense}% to take ${damage} damage`
+    }`
+  );
+
   const message = attacker
     ? !damage
       ? 'Dodge!'

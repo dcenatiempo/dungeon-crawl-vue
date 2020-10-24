@@ -303,7 +303,6 @@ $header-height: 50px;
 
 .game-screen {
   position: relative;
-  height: 100vh;
   display: flex;
   flex-flow: column nowrap;
 
