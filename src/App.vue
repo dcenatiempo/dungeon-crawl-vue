@@ -50,6 +50,9 @@ export default {
 
     getWindowSize();
   },
+  beforeDestroy() {
+    this.$store.unregisterModule('dungeon-crawl');
+  },
 };
 </script>
 

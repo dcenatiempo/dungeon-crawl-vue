@@ -7805,12 +7805,12 @@ if (true) {
     }
   });
 }
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=469ee6c9&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=4a25b0b8&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"dungeon-crawl"}},[(_vm.screen === 'start')?_c('StartScreen',{on:{"start":function($event){_vm.screen = 'game'}}}):_vm._e(),(_vm.screen === 'setup')?_c('SetupScreen'):_vm._e(),(_vm.screen === 'game')?_c('GameScreen',{on:{"restart":function($event){_vm.screen = 'start'}}}):_vm._e()],1)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=469ee6c9&
+// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=4a25b0b8&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.filter.js
 var es_array_filter = __webpack_require__("4de4");
@@ -12690,6 +12690,9 @@ var GameScreen_component = normalizeComponent(
     };
 
     getWindowSize();
+  },
+  beforeDestroy: function beforeDestroy() {
+    this.$store.unregisterModule('dungeon-crawl');
   }
 });
 // CONCATENATED MODULE: ./src/App.vue?vue&type=script&lang=js&
