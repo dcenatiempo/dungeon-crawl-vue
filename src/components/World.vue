@@ -36,6 +36,7 @@ export default {
   data: () => ({
     canvas: null,
     ctx: null,
+    timer: null,
   }),
   computed: {
     ...mapGetters('dungeon-crawl/app', ['grid', 'tileSize', 'dimensions']),
@@ -78,7 +79,10 @@ export default {
     this.ctx = this.canvas.getContext('2d');
     const vm = this;
     // no initial render without setTimeout
-    setInterval(() => vm.drawWorld(), 333);
+    this.timer = setInterval(() => vm.drawWorld(), 333);
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
   },
   methods: {
     getWorldCoords({ row, col }) {

@@ -11485,12 +11485,12 @@ var Header_component = normalizeComponent(
 )
 
 /* harmony default export */ var Header = (Header_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/World.vue?vue&type=template&id=760b341e&
-var Worldvue_type_template_id_760b341e_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"world"},[_c('canvas',{attrs:{"id":"canvas","height":_vm.canvasHeight,"width":_vm.canvasWidth},on:{"click":_vm.handleClick}})])}
-var Worldvue_type_template_id_760b341e_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/World.vue?vue&type=template&id=35d1482e&
+var Worldvue_type_template_id_35d1482e_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"world"},[_c('canvas',{attrs:{"id":"canvas","height":_vm.canvasHeight,"width":_vm.canvasWidth},on:{"click":_vm.handleClick}})])}
+var Worldvue_type_template_id_35d1482e_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/World.vue?vue&type=template&id=760b341e&
+// CONCATENATED MODULE: ./src/components/World.vue?vue&type=template&id=35d1482e&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.regexp.exec.js
 var es_regexp_exec = __webpack_require__("ac1f");
@@ -11537,7 +11537,8 @@ var colors = {
   data: function data() {
     return {
       canvas: null,
-      ctx: null
+      ctx: null,
+      timer: null
     };
   },
   computed: _objectSpread2(_objectSpread2(_objectSpread2(_objectSpread2(_objectSpread2({}, Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl/app', ['grid', 'tileSize', 'dimensions'])), Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl/world', ['currentWorld', 'isTownLevel'])), Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl/player', ['locale', 'isPlayer', 'alerts', 'flash'])), Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl/monsters', ['isMonster', 'currentMonsters'])), {}, {
@@ -11572,9 +11573,12 @@ var colors = {
     this.ctx = this.canvas.getContext('2d');
     var vm = this; // no initial render without setTimeout
 
-    setInterval(function () {
+    this.timer = setInterval(function () {
       return vm.drawWorld();
     }, 333);
+  },
+  beforeDestroy: function beforeDestroy() {
+    clearInterval(this.timer);
   },
   methods: {
     getWorldCoords: function getWorldCoords(_ref) {
@@ -11669,8 +11673,8 @@ var Worldvue_type_style_index_0_lang_scss_ = __webpack_require__("6a64");
 
 var World_component = normalizeComponent(
   components_Worldvue_type_script_lang_js_,
-  Worldvue_type_template_id_760b341e_render,
-  Worldvue_type_template_id_760b341e_staticRenderFns,
+  Worldvue_type_template_id_35d1482e_render,
+  Worldvue_type_template_id_35d1482e_staticRenderFns,
   false,
   null,
   null,
