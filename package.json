@@ -1,11 +1,12 @@
 {
   "name": "dungeon-crawl",
   "version": "0.1.1",
-  "main": "src/main.js",
+  "main": "dist/dungeon-crawl.common.js",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve ./dev/serve.js",
     "build": "npm run build",
+    "build-package": "vue-cli-service build --target lib --name dungeon-crawl ./src/main.js",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },
