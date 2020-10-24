@@ -13,9 +13,11 @@
         <Market />
       </div>
     </template>
-    <h1 class="dungeon-title footer-grid">
-      {{ isTownLevel ? 'Town' : 'Dungeon' }} Level {{ level + 1 }}
-    </h1>
+    <footer>
+      <h1 class="dungeon-title">
+        {{ isTownLevel ? 'Town' : 'Dungeon' }} Level {{ level + 1 }}
+      </h1>
+    </footer>
     <Inspector v-if="toolTip" />
   </div>
 </template>
@@ -300,6 +302,7 @@ export default {
 $header-height: 50px;
 
 .game-screen {
+  position: relative;
   height: 100vh;
   display: flex;
   flex-flow: column nowrap;
@@ -320,14 +323,17 @@ $header-height: 50px;
     right: 0;
     opacity: 0.85;
   }
-  .dungeon-title {
-    color: lightgray;
-    text-align: center;
-    margin: 10px 0;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+
+  footer {
+    .dungeon-title {
+      color: lightgray;
+      text-align: center;
+      margin: 10px 0;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
   }
 }
 </style>

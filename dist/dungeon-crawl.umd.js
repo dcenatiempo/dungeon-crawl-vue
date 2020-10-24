@@ -3362,7 +3362,7 @@ module.exports = {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".game-screen{height:100vh;display:flex;flex-flow:column nowrap}.game-screen .left-sidebar-grid{z-index:10;position:fixed;top:50px;bottom:0;left:0;opacity:.85}.game-screen .right-sidebar-grid{z-index:10;position:fixed;top:50px;bottom:0;right:0;opacity:.85}.game-screen .dungeon-title{color:#d3d3d3;text-align:center;margin:10px 0;position:fixed;bottom:0;left:0;right:0}", ""]);
+exports.push([module.i, ".game-screen{position:relative;height:100vh;display:flex;flex-flow:column nowrap}.game-screen .left-sidebar-grid{z-index:10;position:fixed;top:50px;bottom:0;left:0;opacity:.85}.game-screen .right-sidebar-grid{z-index:10;position:fixed;top:50px;bottom:0;right:0;opacity:.85}.game-screen footer .dungeon-title{color:#d3d3d3;text-align:center;margin:10px 0;position:absolute;bottom:0;left:0;right:0}", ""]);
 // Exports
 module.exports = exports;
 
@@ -3376,7 +3376,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".header{position:fixed;top:0;display:flex;background:#000;color:#d3d3d3;width:100%;height:50px;justify-content:space-around;padding:5px}.header input[type=range].slider{-webkit-appearance:none;width:100%;margin-top:10px;padding-right:10px}.header input[type=range].slider:focus{outline:none}.header input[type=range].slider::-webkit-slider-runnable-track{width:20%;height:5px;cursor:pointer;background:#fff;border-radius:100%;border:none}.header input[type=range].slider::-webkit-slider-thumb{border:2px solid #fff;height:20px;width:20px;border-radius:4px;background:#ff0;cursor:pointer;-webkit-appearance:none;margin-top:-10px}.header input[type=range].slider:focus::-webkit-slider-runnable-track{background:red}.header input[type=range].slider::-moz-range-track{width:20%;height:5px;cursor:pointer;background:#ebeced;border-radius:0;border:none}.header input[type=range].slider::-moz-range-thumb{border:2px solid #fff;height:20px;width:20px;border-radius:4px;background:#585859;cursor:pointer}.header input[type=range].slider::-ms-track{width:20%;height:5px;cursor:pointer;background:transparent;border-color:transparent;color:transparent}.header input[type=range].slider::-ms-fill-lower,.header input[type=range].slider::-ms-fill-upper{background:#fff;border:none;border-radius:0}.header input[type=range].slider::-ms-thumb{border:2px solid #fff;width:20px;border-radius:4px;background:#ff0;cursor:pointer;height:20px}.header input[type=range].slider:focus::-ms-fill-lower,.header input[type=range].slider:focus::-ms-fill-upper{background:red}", ""]);
+exports.push([module.i, ".header{position:absolute;top:0;left:0;right:0;display:flex;background:#000;color:#d3d3d3;width:100%;height:50px;justify-content:space-around;padding:5px}.header input[type=range].slider{-webkit-appearance:none;width:100%;margin-top:10px;padding-right:10px}.header input[type=range].slider:focus{outline:none}.header input[type=range].slider::-webkit-slider-runnable-track{width:20%;height:5px;cursor:pointer;background:#fff;border-radius:100%;border:none}.header input[type=range].slider::-webkit-slider-thumb{border:2px solid #fff;height:20px;width:20px;border-radius:4px;background:#ff0;cursor:pointer;-webkit-appearance:none;margin-top:-10px}.header input[type=range].slider:focus::-webkit-slider-runnable-track{background:red}.header input[type=range].slider::-moz-range-track{width:20%;height:5px;cursor:pointer;background:#ebeced;border-radius:0;border:none}.header input[type=range].slider::-moz-range-thumb{border:2px solid #fff;height:20px;width:20px;border-radius:4px;background:#585859;cursor:pointer}.header input[type=range].slider::-ms-track{width:20%;height:5px;cursor:pointer;background:transparent;border-color:transparent;color:transparent}.header input[type=range].slider::-ms-fill-lower,.header input[type=range].slider::-ms-fill-upper{background:#fff;border:none;border-radius:0}.header input[type=range].slider::-ms-thumb{border:2px solid #fff;width:20px;border-radius:4px;background:#ff0;cursor:pointer;height:20px}.header input[type=range].slider:focus::-ms-fill-lower,.header input[type=range].slider:focus::-ms-fill-upper{background:red}", ""]);
 // Exports
 module.exports = exports;
 
@@ -4130,7 +4130,7 @@ module.exports = isForced;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "html{overflow:hidden}body,html{height:100%}body{overflow:auto;margin:0;background:#262626}#dungeon-crawl *{-ms-box-sizing:border-box;box-sizing:border-box;font-family:Helvetica,sans-serif}#dungeon-crawl .flex-row{display:flex;flex-flow:row wrap}#dungeon-crawl .flex-col{display:flex;flex-flow:column nowrap}", ""]);
+exports.push([module.i, "html{overflow:hidden}body,html{height:100%}body{overflow:auto;margin:0;background:#262626}#dungeon-crawl{position:relative}#dungeon-crawl *{-ms-box-sizing:border-box;box-sizing:border-box;font-family:Helvetica,sans-serif}#dungeon-crawl .flex-row{display:flex;flex-flow:row wrap}#dungeon-crawl .flex-col{display:flex;flex-flow:column nowrap}", ""]);
 // Exports
 module.exports = exports;
 
@@ -7814,12 +7814,12 @@ if (true) {
     }
   });
 }
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=8a091ea8&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=d0a934ec&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"dungeon-crawl"}},[(_vm.screen === 'start')?_c('StartScreen',{on:{"start":function($event){_vm.screen = 'game'}}}):_vm._e(),(_vm.screen === 'setup')?_c('SetupScreen'):_vm._e(),(_vm.screen === 'game')?_c('GameScreen',{on:{"restart":function($event){_vm.screen = 'start'}}}):_vm._e()],1)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=8a091ea8&
+// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=d0a934ec&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.symbol.js
 var es_symbol = __webpack_require__("a4d3");
@@ -11369,22 +11369,22 @@ var SetupScreen_component = normalizeComponent(
 )
 
 /* harmony default export */ var SetupScreen = (SetupScreen_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GameScreen.vue?vue&type=template&id=3c994178&
-var GameScreenvue_type_template_id_3c994178_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"game-screen"},[_c('Header'),_c('World'),(_vm.displayGear)?[_c('div',{staticClass:"left-sidebar-grid",attrs:{"id":"l-sidebar"}},[_c('Bag'),_c('Gear')],1)]:_vm._e(),(_vm.displayMarket)?[_c('div',{staticClass:"right-sidebar-grid",attrs:{"id":"r-sidebar"}},[_c('Market')],1)]:_vm._e(),_c('h1',{staticClass:"dungeon-title footer-grid"},[_vm._v(" "+_vm._s(_vm.isTownLevel ? 'Town' : 'Dungeon')+" Level "+_vm._s(_vm.level + 1)+" ")]),(_vm.toolTip)?_c('Inspector'):_vm._e()],2)}
-var GameScreenvue_type_template_id_3c994178_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GameScreen.vue?vue&type=template&id=1c54c072&
+var GameScreenvue_type_template_id_1c54c072_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"game-screen"},[_c('Header'),_c('World'),(_vm.displayGear)?[_c('div',{staticClass:"left-sidebar-grid",attrs:{"id":"l-sidebar"}},[_c('Bag'),_c('Gear')],1)]:_vm._e(),(_vm.displayMarket)?[_c('div',{staticClass:"right-sidebar-grid",attrs:{"id":"r-sidebar"}},[_c('Market')],1)]:_vm._e(),_c('footer',[_c('h1',{staticClass:"dungeon-title"},[_vm._v(" "+_vm._s(_vm.isTownLevel ? 'Town' : 'Dungeon')+" Level "+_vm._s(_vm.level + 1)+" ")])]),(_vm.toolTip)?_c('Inspector'):_vm._e()],2)}
+var GameScreenvue_type_template_id_1c54c072_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/GameScreen.vue?vue&type=template&id=3c994178&
+// CONCATENATED MODULE: ./src/components/GameScreen.vue?vue&type=template&id=1c54c072&
 
 // EXTERNAL MODULE: ./node_modules/vuex/dist/vuex.esm.js
 var vuex_esm = __webpack_require__("2f62");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Header.vue?vue&type=template&id=42627d80&
-var Headervue_type_template_id_42627d80_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"header"},[_c('button',{on:{"click":_vm.toggleGear}},[_vm._v(" Gear ")]),_c('div',[_vm._v(" Rarity Tolerance "),_c('input',{staticClass:"slider",attrs:{"type":"range","value":"1","min":"1","max":"10","step":"1"},on:{"input":_vm.changeRarity}})]),_c('div',[_vm._v(" Zoom "),_c('input',{staticClass:"slider",attrs:{"type":"range","value":"25","min":"10","max":"100","step":"1"},on:{"input":_vm.changeZoom}})]),_c('div',{staticClass:"flex-col"},[_c('div',[_vm._v("Level: "+_vm._s(_vm.expLevel))]),_c('div',[_vm._v("Exp: "+_vm._s(_vm.experience)+"/100")])]),_c('div',{staticClass:"flex-col"},[_c('div',[_vm._v("Health: "+_vm._s(_vm.health)+"/"+_vm._s(_vm.maxHealth))]),_c('div',[_vm._v("Gold: "+_vm._s(_vm.gold))])]),_c('div',{staticClass:"flex-col"},[_c('div',[_vm._v("Moves Remain: "+_vm._s(_vm.movesRemain))]),_c('div',[_vm._v("Attacks Remain: "+_vm._s(_vm.attacksRemain))])])])}
-var Headervue_type_template_id_42627d80_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Header.vue?vue&type=template&id=733e3fc4&
+var Headervue_type_template_id_733e3fc4_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"header"},[_c('button',{on:{"click":_vm.toggleGear}},[_vm._v(" Gear ")]),_c('div',[_vm._v(" Rarity Tolerance "),_c('input',{staticClass:"slider",attrs:{"type":"range","value":"1","min":"1","max":"10","step":"1"},on:{"input":_vm.changeRarity}})]),_c('div',[_vm._v(" Zoom "),_c('input',{staticClass:"slider",attrs:{"type":"range","value":"25","min":"10","max":"100","step":"1"},on:{"input":_vm.changeZoom}})]),_c('div',{staticClass:"flex-col"},[_c('div',[_vm._v("Level: "+_vm._s(_vm.expLevel))]),_c('div',[_vm._v("Exp: "+_vm._s(_vm.experience)+"/100")])]),_c('div',{staticClass:"flex-col"},[_c('div',[_vm._v("Health: "+_vm._s(_vm.health)+"/"+_vm._s(_vm.maxHealth))]),_c('div',[_vm._v("Gold: "+_vm._s(_vm.gold))])]),_c('div',{staticClass:"flex-col"},[_c('div',[_vm._v("Moves Remain: "+_vm._s(_vm.movesRemain))]),_c('div',[_vm._v("Attacks Remain: "+_vm._s(_vm.attacksRemain))])])])}
+var Headervue_type_template_id_733e3fc4_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/Header.vue?vue&type=template&id=42627d80&
+// CONCATENATED MODULE: ./src/components/Header.vue?vue&type=template&id=733e3fc4&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Header.vue?vue&type=script&lang=js&
 
@@ -11475,8 +11475,8 @@ var Headervue_type_style_index_0_lang_scss_ = __webpack_require__("5452");
 
 var Header_component = normalizeComponent(
   components_Headervue_type_script_lang_js_,
-  Headervue_type_template_id_42627d80_render,
-  Headervue_type_template_id_42627d80_staticRenderFns,
+  Headervue_type_template_id_733e3fc4_render,
+  Headervue_type_template_id_733e3fc4_staticRenderFns,
   false,
   null,
   null,
@@ -12391,6 +12391,8 @@ var Inspector_component = normalizeComponent(
 //
 //
 //
+//
+//
 
 
 
@@ -12699,8 +12701,8 @@ var GameScreenvue_type_style_index_0_lang_scss_ = __webpack_require__("6cf5");
 
 var GameScreen_component = normalizeComponent(
   components_GameScreenvue_type_script_lang_js_,
-  GameScreenvue_type_template_id_3c994178_render,
-  GameScreenvue_type_template_id_3c994178_staticRenderFns,
+  GameScreenvue_type_template_id_1c54c072_render,
+  GameScreenvue_type_template_id_1c54c072_staticRenderFns,
   false,
   null,
   null,

@@ -76,6 +76,8 @@ body {
 }
 
 #dungeon-crawl {
+  position: relative;
+
   * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
