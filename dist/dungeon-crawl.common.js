@@ -9812,6 +9812,7 @@ function isPlayer(state) {
 
 
 
+
 var world_state = function state() {
   return {
     world: [createTownLevel(0)],
@@ -9842,36 +9843,43 @@ var world_mutations = {
   },
   setLevel: function setLevel(state, val) {
     state.playerLevel = val;
+  },
+  updateDungeonLevel: function updateDungeonLevel(state, _ref) {
+    var level = _ref.level,
+        newLevel = _ref.newLevel;
+    state.world[level] = newLevel;
   }
 };
 var world_actions = {
-  restart: function restart(_ref) {
-    var commit = _ref.commit;
+  restart: function restart(_ref2) {
+    var commit = _ref2.commit;
     commit('setWorld', [createTownLevel(0)]);
     commit('setLevel', 0);
   },
-  addNewLevel: function addNewLevel(_ref2, toLevel) {
-    var state = _ref2.state,
-        commit = _ref2.commit;
+  addNewLevel: function addNewLevel(_ref3, toLevel) {
+    var state = _ref3.state,
+        commit = _ref3.commit;
     var level = state.playerLevel;
     var newWorld = JSON.parse(JSON.stringify(state.world));
     if (level % TOWN_EVERY > 0) newWorld.push(createDungeonLevel(toLevel));else newWorld.push(createTownLevel(toLevel));
     commit('setWorld', newWorld);
   },
-  updateVisibility: function updateVisibility(_ref3, target) {
-    var state = _ref3.state,
-        getters = _ref3.getters;
+  updateVisibility: function updateVisibility(_ref4, target) {
+    var state = _ref4.state,
+        getters = _ref4.getters,
+        commit = _ref4.commit;
     var level = state.playerLevel;
     if (level % TOWN_EVERY <= 0) return;
     var shadowSize = 5; //1-5
 
-    var dungeon = state.world[level];
+    var dungeon = _toConsumableArray(state.world[level]);
+
     var coords;
     var shadows = SHADOW_LIST; // takes relative coordinates and converts to absolute coordinates then changes to visible
 
-    function makeFog(_ref4, q) {
-      var relativeRow = _ref4.relativeRow,
-          relativeCol = _ref4.relativeCol;
+    function makeFog(_ref5, q) {
+      var relativeRow = _ref5.relativeRow,
+          relativeCol = _ref5.relativeCol;
 
       //find matching shaddows
       for (var i = 0; i < shadows.length; i++) {
@@ -10070,6 +10078,11 @@ var world_actions = {
     dungeon[target.row][target.col].vis = true; // make players location (0,0) visible
 
     dungeon[target.row][target.col].fog = 0; // make players location (0,0) un-foggy
+
+    commit('updateDungeonLevel', {
+      level: level,
+      newLevel: dungeon
+    });
   }
 };
 /* harmony default export */ var world = ({
