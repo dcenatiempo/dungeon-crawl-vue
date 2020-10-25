@@ -68,6 +68,10 @@ const getters = {
   name: state => state.name,
   level: state => state.level,
   locale: state => state.locale,
+  cellLocale: state => ({
+    row: Math.round(state.locale.row),
+    col: Math.round(state.locale.col),
+  }),
   strength: state => state.strength,
   speed: state => state.speed,
   tenacity: state => state.tenacity,
@@ -163,8 +167,28 @@ const actions = {
     commit('restart');
   },
   movePlayer: ({ state, commit }, target) => {
-    commit('setLocale', target);
-    commit('setMovesRemain', state.movesRemain - 1);
+    // move in a smooth sin curve
+    const prevLocale = state.locale;
+    let step = 0;
+    const steps = 5;
+    const dir = {
+      row: target.row - prevLocale.row,
+      col: target.col - prevLocale.col,
+    };
+    const timer = setInterval(() => {
+      step += 1;
+      let move = Math.sin((step / steps) * (Math.PI / 2));
+      move = step === steps ? Math.round(move) : move;
+      const newTarget = {
+        row: prevLocale.row + dir.row * move,
+        col: prevLocale.col + dir.col * move,
+      };
+      commit('setLocale', newTarget);
+      if (step === steps) {
+        commit('setMovesRemain', state.movesRemain - 1);
+        clearInterval(timer);
+      }
+    }, 33);
   },
   useAttack: ({ state, commit }) => {
     commit('setAttacksRemain', state.attacksRemain - 1);

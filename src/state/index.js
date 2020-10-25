@@ -234,7 +234,7 @@ function battle({ dispatch, rootGetters }, { index, attacker }) {
   }
 
   console.log(
-    `${attacker ? 'Plater' : 'Monster'} ${
+    `${attacker ? 'Player' : 'Monster'} ${
       !damage ? 'dodges!' : `defends with ${defense}% to take ${damage} damage`
     }`
   );

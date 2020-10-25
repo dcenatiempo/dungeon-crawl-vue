@@ -63,6 +63,7 @@ export default {
     ...mapGetters('dungeon-crawl/player', [
       'level',
       'locale',
+      'cellLocale',
       'movesRemain',
       'attacksRemain',
       'health',
@@ -163,7 +164,7 @@ export default {
       }
 
       //console.log("keypress: "+e.keyCode);
-      let currCell = this.locale; // players current coordinates
+      let currCell = this.cellLocale; // players current coordinates
       let currentMonsters = this.currentMonsters; // current dungeon monsters list
       let currentWorld = this.currentWorld;
       let tarCell;

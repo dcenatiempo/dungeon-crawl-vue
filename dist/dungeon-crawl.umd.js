@@ -9342,6 +9342,12 @@ var player_getters = {
   locale: function locale(state) {
     return state.locale;
   },
+  cellLocale: function cellLocale(state) {
+    return {
+      row: Math.round(state.locale.row),
+      col: Math.round(state.locale.col)
+    };
+  },
   strength: function strength(state) {
     return state.strength;
   },
@@ -9477,8 +9483,29 @@ var player_actions = {
   movePlayer: function movePlayer(_ref2, target) {
     var state = _ref2.state,
         commit = _ref2.commit;
-    commit('setLocale', target);
-    commit('setMovesRemain', state.movesRemain - 1);
+    // move in a smooth sin curve
+    var prevLocale = state.locale;
+    var step = 0;
+    var steps = 5;
+    var dir = {
+      row: target.row - prevLocale.row,
+      col: target.col - prevLocale.col
+    };
+    var timer = setInterval(function () {
+      step += 1;
+      var move = Math.sin(step / steps * (Math.PI / 2));
+      move = step === steps ? Math.round(move) : move;
+      var newTarget = {
+        row: prevLocale.row + dir.row * move,
+        col: prevLocale.col + dir.col * move
+      };
+      commit('setLocale', newTarget);
+
+      if (step === steps) {
+        commit('setMovesRemain', state.movesRemain - 1);
+        clearInterval(timer);
+      }
+    }, 33);
   },
   useAttack: function useAttack(_ref3) {
     var state = _ref3.state,
@@ -11169,7 +11196,7 @@ function battle(_ref2, _ref3) {
     damage = 0;
   }
 
-  console.log("".concat(attacker ? 'Plater' : 'Monster', " ").concat(!damage ? 'dodges!' : "defends with ".concat(defense, "% to take ").concat(damage, " damage")));
+  console.log("".concat(attacker ? 'Player' : 'Monster', " ").concat(!damage ? 'dodges!' : "defends with ".concat(defense, "% to take ").concat(damage, " damage")));
   var message = attacker ? !damage ? 'Dodge!' : "-".concat(damage, " health") : !damage ? 'Missed!' : "+".concat(damage, " attack!");
   dispatch('player/addPlayerAlert', message);
   return damage;
@@ -11371,12 +11398,12 @@ var SetupScreen_component = normalizeComponent(
 )
 
 /* harmony default export */ var SetupScreen = (SetupScreen_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GameScreen.vue?vue&type=template&id=62983a93&
-var GameScreenvue_type_template_id_62983a93_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"game-screen"},[_c('Header'),_c('World'),(_vm.displayGear)?[_c('div',{staticClass:"left-sidebar-grid",attrs:{"id":"l-sidebar"}},[_c('Bag'),_c('Gear')],1)]:_vm._e(),(_vm.displayMarket)?[_c('div',{staticClass:"right-sidebar-grid",attrs:{"id":"r-sidebar"}},[_c('Market')],1)]:_vm._e(),_c('footer',[_c('h1',{staticClass:"dungeon-title"},[_vm._v(" "+_vm._s(_vm.isTownLevel ? 'Town' : 'Dungeon')+" Level "+_vm._s(_vm.level + 1)+" ")])]),(_vm.toolTip)?_c('Inspector'):_vm._e()],2)}
-var GameScreenvue_type_template_id_62983a93_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/GameScreen.vue?vue&type=template&id=2cdb3d6f&
+var GameScreenvue_type_template_id_2cdb3d6f_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"game-screen"},[_c('Header'),_c('World'),(_vm.displayGear)?[_c('div',{staticClass:"left-sidebar-grid",attrs:{"id":"l-sidebar"}},[_c('Bag'),_c('Gear')],1)]:_vm._e(),(_vm.displayMarket)?[_c('div',{staticClass:"right-sidebar-grid",attrs:{"id":"r-sidebar"}},[_c('Market')],1)]:_vm._e(),_c('footer',[_c('h1',{staticClass:"dungeon-title"},[_vm._v(" "+_vm._s(_vm.isTownLevel ? 'Town' : 'Dungeon')+" Level "+_vm._s(_vm.level + 1)+" ")])]),(_vm.toolTip)?_c('Inspector'):_vm._e()],2)}
+var GameScreenvue_type_template_id_2cdb3d6f_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/GameScreen.vue?vue&type=template&id=62983a93&
+// CONCATENATED MODULE: ./src/components/GameScreen.vue?vue&type=template&id=2cdb3d6f&
 
 // EXTERNAL MODULE: ./node_modules/vuex/dist/vuex.esm.js
 var vuex_esm = __webpack_require__("2f62");
@@ -11487,12 +11514,12 @@ var Header_component = normalizeComponent(
 )
 
 /* harmony default export */ var Header = (Header_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/World.vue?vue&type=template&id=c0e2ce6e&
-var Worldvue_type_template_id_c0e2ce6e_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"world"},[_c('canvas',{attrs:{"id":"canvas","height":_vm.canvasHeight,"width":_vm.canvasWidth},on:{"click":_vm.handleClick}})])}
-var Worldvue_type_template_id_c0e2ce6e_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e2d3ca34-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/World.vue?vue&type=template&id=14213bac&
+var Worldvue_type_template_id_14213bac_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"world"},[_c('canvas',{attrs:{"id":"canvas","height":_vm.canvasHeight,"width":_vm.canvasWidth},on:{"click":_vm.handleClick}})])}
+var Worldvue_type_template_id_14213bac_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/World.vue?vue&type=template&id=c0e2ce6e&
+// CONCATENATED MODULE: ./src/components/World.vue?vue&type=template&id=14213bac&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.regexp.exec.js
 var es_regexp_exec = __webpack_require__("ac1f");
@@ -11643,6 +11670,32 @@ var colors = {
       this.ctx.fillStyle = color;
       this.ctx.fillRect(x, y, size, size);
     },
+    drawPlayer: function drawPlayer(_ref4) {
+      var row = _ref4.row,
+          col = _ref4.col;
+      var tileCenter = this.getCanvasCoords({
+        row: row,
+        col: col
+      }); // is cell completely out of canvas bounds?
+
+      var left = tileCenter.x - this.tileSize / 2;
+      if (left > this.canvasWidth) return;
+      var right = tileCenter.x + this.tileSize / 2;
+      if (right < 0) return;
+      var top = tileCenter.y - this.tileSize / 2;
+      if (top > this.canvasHeight) return;
+      var bottom = tileCenter.y + this.tileSize / 2;
+      if (bottom < 0) return;
+      var cell = this.currentWorld[Math.round(row)][Math.round(col)]; // is it visible by the player?
+
+      if (!cell.vis) return;
+      var size = this.tileSize - this.tileBorder;
+      var x = left;
+      var y = top;
+      var color = this.flash ? colors.flash : colors.player;
+      this.ctx.fillStyle = color;
+      this.ctx.fillRect(x, y, size, size);
+    },
     drawWorld: function drawWorld() {
       var vm = this; // draw background
 
@@ -11656,6 +11709,7 @@ var colors = {
           });
         });
       });
+      this.drawPlayer(this.locale);
     }
   }
 });
@@ -11675,8 +11729,8 @@ var Worldvue_type_style_index_0_lang_scss_ = __webpack_require__("6a64");
 
 var World_component = normalizeComponent(
   components_Worldvue_type_script_lang_js_,
-  Worldvue_type_template_id_c0e2ce6e_render,
-  Worldvue_type_template_id_c0e2ce6e_staticRenderFns,
+  Worldvue_type_template_id_14213bac_render,
+  Worldvue_type_template_id_14213bac_staticRenderFns,
   false,
   null,
   null,
@@ -12422,7 +12476,7 @@ var Inspector_component = normalizeComponent(
       displaySetByMarket: false
     };
   },
-  computed: _objectSpread2(_objectSpread2(_objectSpread2(_objectSpread2(_objectSpread2({}, Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl', ['getExpFromMonst'])), Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl/app', ['displayGear', 'displayMarket', 'toolTip'])), Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl/world', ['currentWorld', 'isTownLevel', 'levels', 'getLevel'])), Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl/player', ['level', 'locale', 'movesRemain', 'attacksRemain', 'health'])), Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl/monsters', ['currentMonsters', 'isMonster'])),
+  computed: _objectSpread2(_objectSpread2(_objectSpread2(_objectSpread2(_objectSpread2({}, Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl', ['getExpFromMonst'])), Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl/app', ['displayGear', 'displayMarket', 'toolTip'])), Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl/world', ['currentWorld', 'isTownLevel', 'levels', 'getLevel'])), Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl/player', ['level', 'locale', 'cellLocale', 'movesRemain', 'attacksRemain', 'health'])), Object(vuex_esm["b" /* mapGetters */])('dungeon-crawl/monsters', ['currentMonsters', 'isMonster'])),
   watch: {
     health: function health(_health) {
       if (_health <= 0) this.restartGame();
@@ -12498,7 +12552,7 @@ var Inspector_component = normalizeComponent(
       } //console.log("keypress: "+e.keyCode);
 
 
-      var currCell = this.locale; // players current coordinates
+      var currCell = this.cellLocale; // players current coordinates
 
       var currentMonsters = this.currentMonsters; // current dungeon monsters list
 
@@ -12707,8 +12761,8 @@ var GameScreenvue_type_style_index_0_lang_scss_ = __webpack_require__("6cf5");
 
 var GameScreen_component = normalizeComponent(
   components_GameScreenvue_type_script_lang_js_,
-  GameScreenvue_type_template_id_62983a93_render,
-  GameScreenvue_type_template_id_62983a93_staticRenderFns,
+  GameScreenvue_type_template_id_2cdb3d6f_render,
+  GameScreenvue_type_template_id_2cdb3d6f_staticRenderFns,
   false,
   null,
   null,

@@ -137,6 +137,33 @@ export default {
 
       this.ctx.fillRect(x, y, size, size);
     },
+    drawPlayer({ row, col }) {
+      const tileCenter = this.getCanvasCoords({ row, col });
+
+      // is cell completely out of canvas bounds?
+      const left = tileCenter.x - this.tileSize / 2;
+      if (left > this.canvasWidth) return;
+      const right = tileCenter.x + this.tileSize / 2;
+      if (right < 0) return;
+      const top = tileCenter.y - this.tileSize / 2;
+      if (top > this.canvasHeight) return;
+      const bottom = tileCenter.y + this.tileSize / 2;
+      if (bottom < 0) return;
+
+      const cell = this.currentWorld[Math.round(row)][Math.round(col)];
+
+      // is it visible by the player?
+      if (!cell.vis) return;
+
+      const size = this.tileSize - this.tileBorder;
+      const x = left;
+      const y = top;
+      let color = this.flash ? colors.flash : colors.player;
+
+      this.ctx.fillStyle = color;
+
+      this.ctx.fillRect(x, y, size, size);
+    },
     drawWorld() {
       const vm = this;
 
@@ -149,6 +176,8 @@ export default {
           vm.drawCell({ row: ri, col: ci });
         });
       });
+
+      this.drawPlayer(this.locale);
     },
   },
 };
