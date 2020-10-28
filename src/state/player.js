@@ -3,7 +3,8 @@ import { WEAPON_LIST } from '../lib/constants';
 
 // import { rarityTolerance } from './app';
 
-let timerVar;
+let alertTimerVar;
+let flashTimerVar;
 
 const defaultState = {
   type: 'player',
@@ -196,12 +197,15 @@ const actions = {
   },
   loseHealth: ({ state, commit }, damage) => {
     commit('setHealth', state.health - damage);
-
     commit('setFlash', state.flash + 2);
 
-    clearTimeout(timerVar);
-    timerVar = setInterval(() => {
-      state.flash <= 0 ? clearTimeout(timerVar) : null;
+    if (flashTimerVar) return;
+
+    flashTimerVar = setInterval(() => {
+      if (state.flash <= 1) {
+        clearTimeout(flashTimerVar);
+        flashTimerVar = null;
+      }
       commit('setFlash', state.flash - 1);
     }, 100);
   },
@@ -222,13 +226,16 @@ const actions = {
   },
   clearPlayerAlerts: ({ state, commit }) => {
     if (!state.alerts?.length) return;
-    clearTimeout(timerVar);
-    timerVar = setInterval(() => {
-      console.log(state.alerts);
+    if (alertTimerVar) return;
+
+    alertTimerVar = setInterval(() => {
       const newAlerts = [...state.alerts];
       newAlerts.pop();
       commit('setAlerts', newAlerts);
-      newAlerts.length === 0 ? clearTimeout(timerVar) : null;
+      if (newAlerts.length === 0) {
+        clearTimeout(alertTimerVar);
+        alertTimerVar = null;
+      }
     }, biggest(900 - state.alerts.length * 100, 200));
   },
   // put item in hand

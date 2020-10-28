@@ -139,7 +139,7 @@ export default {
       this.$emit('restart');
       this.restart();
     },
-    handleKeypress(e) {
+    async handleKeypress(e) {
       const vm = this;
       function getCoords(fromLevel, toLevel) {
         let nextLevel = vm.getLevel(toLevel);
@@ -164,10 +164,10 @@ export default {
       }
 
       //console.log("keypress: "+e.keyCode);
-      let currCell = this.cellLocale; // players current coordinates
+      let currentLocale = this.cellLocale; // players current coordinates
       let currentMonsters = this.currentMonsters; // current dungeon monsters list
       let currentWorld = this.currentWorld;
-      let tarCell;
+      let targetLocale;
       let kp = e.keyCode || e.which;
       let dir; // [row direction, col direction]
       switch (kp) {
@@ -211,7 +211,10 @@ export default {
       if (!dir) return;
 
       // targetCell is potential future location of player
-      tarCell = { row: currCell.row + dir.row, col: currCell.col + dir.col };
+      targetLocale = {
+        row: currentLocale.row + dir.row,
+        col: currentLocale.col + dir.col,
+      };
 
       // does player have any moves left???
       if (this.movesRemain === 0) {
@@ -219,30 +222,32 @@ export default {
         return;
       }
 
+      const currentCell = currentWorld[currentLocale.row][currentLocale.col];
+      const targetCell = currentWorld[targetLocale.row][targetLocale.col];
+
       // if leaving market...
-      if (currentWorld[currCell.row][currCell.col].type === 'market') {
-        if (currentWorld[tarCell.row][tarCell.col].type !== 'market')
-          this.setDisplayMarket(false);
+      if (currentCell.type === 'market') {
+        if (targetCell.type !== 'market') this.setDisplayMarket(false);
         if (this.displaySetByMarket) this.setDisplayGear(false);
       }
 
-      const monster = this.isMonster(tarCell);
+      const monster = this.isMonster(targetLocale);
 
       // if targetCell is a wall...
-      if (currentWorld[tarCell.row][tarCell.col].type === 'wall') {
+      if (targetCell.type === 'wall') {
         //console.log("you can't walk through walls!");
       }
 
       // if targetCell is a gate...
-      else if (currentWorld[tarCell.row][tarCell.col].type === 'gate') {
+      else if (targetCell.type === 'gate') {
         let fromLevel = this.level;
-        let toLevel = currentWorld[tarCell.row][tarCell.col].toLevel;
-        this.movePlayerAction(tarCell); // move player onto gate
+        let toLevel = targetCell.toLevel;
+        this.movePlayerAction(targetLocale); // move player onto gate
         this.changeLevel(toLevel); // change players level/location
         if (toLevel >= this.levels) {
           // if this level does not exist then...
           // console.log('creating level ' + toLevel); //
-          this.addNewLevel(toLevel); // create new level
+          await this.addNewLevel(toLevel); // create new level
           this.populateLevel(toLevel); // populate new level with monsters
           this.isTownLevel ? this.populateMarket(toLevel) : null;
         }
@@ -250,9 +255,9 @@ export default {
       }
 
       // if targetCell is a market...
-      else if (currentWorld[tarCell.row][tarCell.col].type === 'market') {
+      else if (targetCell.type === 'market') {
         // console.log('lets barter!');
-        this.movePlayerAction(tarCell);
+        this.movePlayerAction(targetLocale);
         if (!this.displayMarket) {
           this.setDisplayMarket(true);
         }
@@ -276,23 +281,21 @@ export default {
             const monsterKilled = !vm.isMonster(mi)?.isAlive;
             if (monsterKilled) {
               //console.log("earn experience "+getExpFromMonst(currentMonsters[m]))
-              //vm.props.addPlayerAlert(("+"+getExpFromMonst(currentMonsters[m])+" experience"))
               vm.gainExperience(vm.getExpFromMonst(currentMonsters[mi]));
             }
           });
-        } else this.movePlayerAction(currCell); //no more attacks: 'move' player to square already on
+        } else this.movePlayerAction(currentLocale); //no more attacks: 'move' player to square already on
       }
 
       // if targetCell is dead monster
       else if (!monster?.isAlive && monster?.hasGear) {
-        //console.log("pick up items");
-        this.pickUpItems(tarCell);
-        this.movePlayerAction(tarCell);
+        this.pickUpItems(targetLocale);
+        this.movePlayerAction(targetLocale);
       }
 
       // if targetCell is open ground...
-      else if (currentWorld[tarCell.row][tarCell.col].type === 'floor') {
-        this.movePlayerAction(tarCell);
+      else if (targetCell.type === 'floor') {
+        this.movePlayerAction(targetLocale);
       }
     },
   },

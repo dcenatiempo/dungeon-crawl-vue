@@ -36,10 +36,9 @@ const actions = {
     commit('setLevel', 0);
   },
   addNewLevel({ state, commit }, toLevel) {
-    const level = state.playerLevel;
     let newWorld = JSON.parse(JSON.stringify(state.world));
 
-    if (level % TOWN_EVERY > 0) newWorld.push(createDungeonLevel(toLevel));
+    if (toLevel % TOWN_EVERY > 0) newWorld.push(createDungeonLevel(toLevel));
     else newWorld.push(createTownLevel(toLevel));
 
     commit('setWorld', newWorld);
